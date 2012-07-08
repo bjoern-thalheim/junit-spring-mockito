@@ -1,5 +1,7 @@
 package com.cellent.spring.utils.junit_spring;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public interface BeanInstanceProvider {
 
 	/**
@@ -35,5 +37,26 @@ public interface BeanInstanceProvider {
 	 *            Eine Instanz einer bestimmten Klasse.
 	 */
 	void registerInstance(Object beanInstance);
+
+	/**
+	 * Registriert einen bestimmten Value, welcher dann ggf. beim Instanziieren
+	 * berücksichtigt wird.
+	 * 
+	 * @param key
+	 *            Schlüssel des Konfigurationsparameters.
+	 * @param value
+	 *            Wert des Konfigurationsparameters.
+	 */
+	void setValue(String key, Object value);
+
+	/**
+	 * Liefert das Objekt, welches via {@link Value}-Annotation unter dem
+	 * gegebenen Schlüsselwert registriert wurde.
+	 * 
+	 * @param value
+	 *            Der Key der {@link Value}-Annotation.
+	 * @return Der Wert dieser Annotation.
+	 */
+	Object getValue(String value);
 
 }

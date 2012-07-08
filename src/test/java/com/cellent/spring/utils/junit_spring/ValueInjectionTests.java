@@ -24,12 +24,12 @@ public class ValueInjectionTests {
 	private static final String VALUE = "fvztgbuzh!";
 
 	/** Class under Test. */
-	private BeanAndValueInstanceProvider instanceProvider;
+	private BeanInstanceProvider instanceProvider;
 
 	/** Init Class under Test. */
 	@Before
 	public void init() {
-		instanceProvider = new BeanAndValueInstanceProviderImpl();
+		instanceProvider = new AbstractSpringMockitoTest();
 	}
 
 	/**

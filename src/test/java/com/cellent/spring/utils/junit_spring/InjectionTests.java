@@ -26,7 +26,7 @@ public class InjectionTests {
 	 */
 	@Before
 	public void init() {
-		abstractSpringMockTest = new AbstractSpringMockTest();
+		abstractSpringMockTest = new AbstractSpringMockitoTest();
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class InjectionTests {
 		assertTrue(delegate == owningBean.getDelegate());
 		// Nochmal ausprobieren, was passiert, wenn zuerst das Delegate und dann
 		// das Bean erzeugt werden
-		abstractSpringMockTest = new AbstractSpringMockTest();
+		abstractSpringMockTest = new AbstractSpringMockitoTest();
 		delegate = abstractSpringMockTest.getInstanceOf(MyDelegate.class);
 		owningBean = abstractSpringMockTest
 				.createBean(MyBeanWithFieldAutowiredBean.class);

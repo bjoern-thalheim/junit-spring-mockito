@@ -21,7 +21,7 @@ import org.springframework.context.support.GenericApplicationContext;
  * 
  * @author bjoern
  */
-public final class BeanAndValueInstanceProviderImpl implements BeanAndValueInstanceProvider {
+public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 
 	/**
 	 * Eine Map mit allen {@link Value}s.
@@ -53,7 +53,7 @@ public final class BeanAndValueInstanceProviderImpl implements BeanAndValueInsta
 	 * Klasse der Methode {@link #createBean(Class)} überlassen.
 	 */
 	@SuppressWarnings("rawtypes")
-	public BeanAndValueInstanceProviderImpl() {
+	public AbstractSpringMockitoTest() {
 		// Initialisiere den Object Cache ({@link #mockInstanceMap},
 		// Pseudo-ApplicationContext) und den {@link #autowirePostProcessor}.
 		mockInstanceMap = new HashMap<Class, Object>();
@@ -61,7 +61,7 @@ public final class BeanAndValueInstanceProviderImpl implements BeanAndValueInsta
 		// Spring Infrastruktur
 		autowirePostProcessor = new AutowiredAnnotationBeanPostProcessor();
 		applicationContext = new GenericApplicationContext(
-				new MockitoTestBeanAndValueFactory(this));
+				new MockitoTestBeanFactory(this));
 		autowirePostProcessor.setBeanFactory(applicationContext
 				.getAutowireCapableBeanFactory());
 	}
@@ -117,7 +117,7 @@ public final class BeanAndValueInstanceProviderImpl implements BeanAndValueInsta
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.cellent.spring.utils.junit_spring.BeanAndValueInstanceProvider#setValue(java.lang.String, java.lang.Object)
+	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#setValue(java.lang.String, java.lang.Object)
 	 */
 	public void setValue(String key, Object value) {
 		atValueMap.put(key, value);
