@@ -54,9 +54,12 @@ public class ValueInjectionTests {
 		assertNull(instance.getFieldInjectedValue());
 		assertEquals(VALUE, instance.getSetterInjectedValue());
 	}
-	
-	@Test public void testMethodParamInjection() {
+
+	@Test
+	public void testMethodParamInjection() {
 		instanceProvider.setValue("methodParamInjectedValue", VALUE);
+		// Hier muss immer noch die entsprechende Klasse gebaut werden, welche
+		// diese Geschichte abbildet.
 		fail("Not yet implemented.");
 	}
 
