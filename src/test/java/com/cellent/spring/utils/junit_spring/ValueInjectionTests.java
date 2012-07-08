@@ -54,5 +54,9 @@ public class ValueInjectionTests {
 		assertNull(instance.getFieldInjectedValue());
 		assertEquals(VALUE, instance.getSetterInjectedValue());
 	}
+	
+	@Test public void testMethodParamInjection() {
+		fail("Not yet implemented.");
+	}
 
 }
