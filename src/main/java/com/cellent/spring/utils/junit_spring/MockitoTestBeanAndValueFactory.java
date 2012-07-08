@@ -1,5 +1,6 @@
 package com.cellent.spring.utils.junit_spring;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -46,8 +47,9 @@ class MockitoTestBeanAndValueFactory extends DefaultListableBeanFactory {
 	@Override
 	public <T> T getBean(Class<T> requiredType) throws BeansException {
 		Constructor<?> constructor = getAutowiredOrOnlyConstructorOf(requiredType);
-		Object[] constructorArguments = findOrInstantiate(constructor
-				.getParameterTypes());
+		Object[] constructorArguments = findOrInstantiate(
+				constructor.getParameterTypes(),
+				constructor.getParameterAnnotations());
 		try {
 			return (T) constructor.newInstance(constructorArguments);
 		} catch (Exception e) {
@@ -60,23 +62,63 @@ class MockitoTestBeanAndValueFactory extends DefaultListableBeanFactory {
 	}
 
 	/**
-	 * Geht durch eine Liste von Classes und findet oder instanziiert diese im
-	 * ApplicationContext.
+	 * Geht durch eine Liste von Classes und Annotationen und findet oder
+	 * instanziiert diese im ApplicationContext.
 	 * 
 	 * @param paramTypes
 	 *            Menge an Classes.
+	 * @param parameterAnnotations
+	 *            Die Annotationen an den Parametern.
 	 * @return Instanzen der gegebenen Classes in genau der Reihenfolge wie
 	 *         gegeben.
 	 */
-	private Object[] findOrInstantiate(Class<?>[] paramTypes) {
+	private Object[] findOrInstantiate(Class<?>[] paramTypes,
+			Annotation[][] parameterAnnotations) {
 		Object[] result = new Object[paramTypes.length];
 		for (int i = 0; i < paramTypes.length; i++) {
 			Class<?> paramType = paramTypes[i];
-			Object paramInstance = this.beanInstanceProvider
-					.getInstanceOf(paramType);
-			result[i] = paramInstance;
+			Annotation[] currentAnnotations = parameterAnnotations[i];
+			Object injectedValue = evaluateMethodParamAnnotations(currentAnnotations);
+			// Herausfinden, ob der Parameter mit @Value annotiert ist, wenn ja,
+			// so muss der entsprechende Value aus dem BeanInstanceProvider
+			// geholt werden.
+			if (injectedValue != null) {
+				result[i] = injectedValue;
+			} else {
+				// Wenn dieser Methodenparameter nicht gerade mit Value
+				// annotiert ist, so müssen wir die vorhandene Instanz
+				// injizieren.
+				Object paramInstance = this.beanInstanceProvider
+						.getInstanceOf(paramType);
+				result[i] = paramInstance;
+			}
 		}
 		return result;
+	}
+
+	/**
+	 * UNtersucht die Annotationen an den Methodenparametern. Findet sich daran
+	 * eine {@link Value}-Annotation, so wird diese entsprechend behandelt und
+	 * es wird nicht versucht, einen Mock von dieser Klasse zu erzeugen.
+	 * 
+	 * @param methodParameterAnnotations
+	 *            Die Annoationen eines MethodenParameters.
+	 * @return Eine Instanz aus den bekannten Values oder null, falls es sowas
+	 *         nicht gibt.
+	 */
+	private Object evaluateMethodParamAnnotations(
+			Annotation[] methodParameterAnnotations) {
+		Object injectedValue = null;
+		if (methodParameterAnnotations.length > 0) {
+			for (Annotation annotation : methodParameterAnnotations) {
+				if (annotation instanceof Value) {
+					injectedValue = beanInstanceProvider
+							.getValue(((Value) annotation).value());
+					break;
+				}
+			}
+		}
+		return injectedValue;
 	}
 
 	/**
