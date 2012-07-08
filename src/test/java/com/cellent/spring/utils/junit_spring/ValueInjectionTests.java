@@ -4,8 +4,10 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import com.cellent.spring.utils.junit_spring.support.MyBeanWithMethodParamInjected;
 import com.cellent.spring.utils.junit_spring.support.MyBeanWithValueInjected;
 
 /**
@@ -55,12 +57,19 @@ public class ValueInjectionTests {
 		assertEquals(VALUE, instance.getSetterInjectedValue());
 	}
 
+	/**
+	 * Teste, wie die Injection eines Methodenparameters, welcher mit
+	 * {@link Value} annotiert ist, in einer Methode oder einem Konstruktor,
+	 * welcher mit {@link Autowired} annotiert ist, funktioniert.
+	 */
 	@Test
 	public void testMethodParamInjection() {
 		instanceProvider.setValue("methodParamInjectedValue", VALUE);
 		// Hier muss immer noch die entsprechende Klasse gebaut werden, welche
 		// diese Geschichte abbildet.
-		fail("Not yet implemented.");
+		MyBeanWithMethodParamInjected instance = instanceProvider
+				.createBean(MyBeanWithMethodParamInjected.class);
+		assertEquals(VALUE, instance.getValue());
 	}
 
 }
