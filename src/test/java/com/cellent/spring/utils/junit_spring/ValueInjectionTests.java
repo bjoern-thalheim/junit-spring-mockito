@@ -56,6 +56,7 @@ public class ValueInjectionTests {
 	}
 	
 	@Test public void testMethodParamInjection() {
+		instanceProvider.setValue("methodParamInjectedValue", VALUE);
 		fail("Not yet implemented.");
 	}
 
