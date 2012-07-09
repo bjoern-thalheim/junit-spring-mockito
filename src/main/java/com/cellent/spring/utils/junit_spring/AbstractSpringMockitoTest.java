@@ -15,42 +15,46 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**
- * Klasse, welche eine Art ApplicationContext für Tests ausführt, damit
- * Field-Injection gleich so geht und kein Setter für das injizierte Bean nur
- * für den Test eingeführt werden muss.
+ * Class which contains a kind of application context, to make autowiring work
+ * in tests without having to build up a real application context. It vontains a
+ * map of Objects which may be injected as Objects and another Map which
+ * contains instances which will be injected on {@link Value} annotations.
  * 
  * @author bjoern
  */
 public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 
 	/**
-	 * Eine Map mit allen {@link Value}s.
+	 * A Map with all {@link Value}s.
 	 */
 	private Map<String, Object> atValueMap;
 
 	/**
-	 * Cache für Beans im Applicationcontext. Wird beim
+	 * Cache for beans in the context. Will be used by
 	 * {@link MockitoTestBeanFactory#resolveDependency(DependencyDescriptor, String, Set, TypeConverter)}
-	 * verwendet.
 	 */
 	@SuppressWarnings("rawtypes")
 	private Map<Class, Object> mockInstanceMap;
 
 	/**
-	 * Um Injection (Field und Method) auf blanken Beans ausführen zu können.
+	 * @see AutowiredAnnotationBeanPostProcessor. This will be effectively
+	 *      important to call
+	 *      {@link MockitoTestBeanFactory#resolveDependency(DependencyDescriptor, String, Set, TypeConverter)}
+	 *      .
 	 */
 	private AutowiredAnnotationBeanPostProcessor autowirePostProcessor;
 
 	/**
-	 * Um Instanziierung via Spring (mit Konstriktor-Injection) durchführen zu
-	 * können.
+	 * To instantiate by Spring and do constructor injection. Will be using
+	 * {@link MockitoTestBeanFactory#getBean(Class)}.
 	 */
 	ApplicationContext applicationContext;
 
 	/**
-	 * Erzeuge eine Instanz, welche es ermöglicht Spring-DI auch beim Erzeugen
-	 * von Testklassen zu verwenden. Hierzu muss man die Instanziierung der
-	 * Klasse der Methode {@link #createBean(Class)} überlassen.
+	 * Create an object (you might call it context or factory as well) which
+	 * allows to do spring autowiring also in test classes without any special
+	 * test runner. Eventually, instantiate the class under Test by
+	 * {@link #createBean(Class)}.
 	 */
 	@SuppressWarnings("rawtypes")
 	public AbstractSpringMockitoTest() {
@@ -102,7 +106,10 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#getInstanceOf(java.lang.Class)
+	 * 
+	 * @see
+	 * com.cellent.spring.utils.junit_spring.BeanInstanceProvider#getInstanceOf
+	 * (java.lang.Class)
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getInstanceOf(Class<T> clazz) {
@@ -117,7 +124,10 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#setValue(java.lang.String, java.lang.Object)
+	 * 
+	 * @see
+	 * com.cellent.spring.utils.junit_spring.BeanInstanceProvider#setValue(java
+	 * .lang.String, java.lang.Object)
 	 */
 	public void setValue(String key, Object value) {
 		atValueMap.put(key, value);
@@ -125,22 +135,27 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#getValue(java.lang.String)
+	 * 
+	 * @see
+	 * com.cellent.spring.utils.junit_spring.BeanInstanceProvider#getValue(java
+	 * .lang.String)
 	 */
 	public Object getValue(String value) {
 		return atValueMap.get(value);
 	}
 
 	/**
-	 * Suche nach einer gegebenen Klasse in der Menge bekannter Instanzen. Wird
-	 * eine gefunden, word das Paar von Klasse und Instanz in
-	 * {@link #mockInstanceMap} eingetragen und true zurück gegeben, sonst
-	 * false.
+	 * Search fo a class in a set of known instances. If one is found, a pair of
+	 * class/object will be cached in {@link #mockInstanceMap} and true is
+	 * returned, otherwise false.
+	 * 
+	 * If true is returned, you can obtain your instance via
+	 * {@link Map#get(Object)} on {@link #mockInstanceMap}.
 	 * 
 	 * @param clazz
-	 *            Die gesuchte Klasse.
-	 * @return true, wenn {@link #mockInstanceMap} eine Instanz der Klasse hat,
-	 *         sonst false.
+	 *            The class you are looking for.
+	 * @return true, if {@link #mockInstanceMap} holds an instance of this
+	 *         class, false otherwise.
 	 */
 	private <T> boolean discoverInstanceOf(Class<T> clazz) {
 		Collection<Object> instaces = mockInstanceMap.values();
@@ -154,11 +169,11 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 	}
 
 	/**
-	 * Erzeuge eine Instanz der gewünschten Klasse mit Mockito.
+	 * Create a mocked instance of the desired class.
 	 * 
 	 * @param requiredType
-	 *            Die gewünschte Klasse.
-	 * @return Eine Mocj-Instanz der gewünschten Klasse.
+	 *            The desired class.
+	 * @return A {@link Mockito}-Mock of the desired class.
 	 */
 	private <T> T createMockInstance(Class<T> requiredType) {
 		return Mockito.mock(requiredType);

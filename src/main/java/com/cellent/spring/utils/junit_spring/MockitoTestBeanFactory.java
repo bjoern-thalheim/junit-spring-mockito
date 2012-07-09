@@ -16,24 +16,28 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.MethodParameter;
 
 /**
- * Eigene Bean Factory, welche unbekannte Klassen als Mock instanziiert, wenn
- * sie in beliebige Klassen ge-autowired werden.
+ * Bean factory, which uses {@link BeanInstanceProvider#getInstanceOf(Class)}
+ * and {@link BeanInstanceProvider#getValue(String)} to to autowiring without a
+ * spring context.
  * 
  * @author bjoern
  */
 class MockitoTestBeanFactory extends DefaultListableBeanFactory {
 
 	/**
-	 * Der {@link BeanInstanceProvider}, an welchen die Instanzierung und die
-	 * Verwaltung von Instanzen delegiert werden soll.
+	 * The {@link BeanInstanceProvider} which takes care of object creation and
+	 * management.
 	 */
 	private final BeanInstanceProvider beanInstanceProvider;
 
 	/**
+	 * Constructor of this class.
+	 * 
 	 * @param beanInstanceProvider
+	 *            The {@link BeanInstanceProvider} which takes care of object
+	 *            creation and management.
 	 */
-	MockitoTestBeanFactory(
-			BeanInstanceProvider abstractSpringMockTest) {
+	MockitoTestBeanFactory(BeanInstanceProvider abstractSpringMockTest) {
 		this.beanInstanceProvider = abstractSpringMockTest;
 	}
 
@@ -56,38 +60,38 @@ class MockitoTestBeanFactory extends DefaultListableBeanFactory {
 			throw new UnsupportedOperationException(
 					"Error creating a new instance of "
 							+ requiredType.getCanonicalName()
-							+ ", maybe this class is not instantiatable with a default Constructor?",
+							+ "."
+							+ " Maybe this class is neither instantiatable with a default Constructor,"
+							+ " nor with a constructor with autowired arguments?",
 					e);
 		}
 	}
 
 	/**
-	 * Geht durch eine Liste von Classes und Annotationen und findet oder
-	 * instanziiert diese im ApplicationContext.
+	 * Iterate over a list of classes and annotations and finds a corresponding
+	 * instance if them (both {@link Value} of {@link Autowired} object).
 	 * 
 	 * @param paramTypes
-	 *            Menge an Classes.
+	 *            A set of method parameter classes.
 	 * @param parameterAnnotations
-	 *            Die Annotationen an den Parametern.
-	 * @return Instanzen der gegebenen Classes in genau der Reihenfolge wie
-	 *         gegeben.
+	 *            The annotations on these method parameters.
+	 * @return Instances of the desired method parameter classes.
 	 */
 	private Object[] findOrInstantiate(Class<?>[] paramTypes,
 			Annotation[][] parameterAnnotations) {
 		Object[] result = new Object[paramTypes.length];
 		for (int i = 0; i < paramTypes.length; i++) {
-			Class<?> paramType = paramTypes[i];
+			// It is possible a method param is annotated with @Value. If so,
+			// finding this value is delegated to another method.
 			Annotation[] currentAnnotations = parameterAnnotations[i];
 			Object injectedValue = evaluateMethodParamAnnotations(currentAnnotations);
-			// Herausfinden, ob der Parameter mit @Value annotiert ist, wenn ja,
-			// so muss der entsprechende Value aus dem BeanInstanceProvider
-			// geholt werden.
 			if (injectedValue != null) {
 				result[i] = injectedValue;
 			} else {
-				// Wenn dieser Methodenparameter nicht gerade mit Value
-				// annotiert ist, so müssen wir die vorhandene Instanz
-				// injizieren.
+				// The method param is not annotated with @Value. We'll look
+				// into the context to find
+				// an instance of this class.
+				Class<?> paramType = paramTypes[i];
 				Object paramInstance = this.beanInstanceProvider
 						.getInstanceOf(paramType);
 				result[i] = paramInstance;
@@ -97,14 +101,14 @@ class MockitoTestBeanFactory extends DefaultListableBeanFactory {
 	}
 
 	/**
-	 * UNtersucht die Annotationen an den Methodenparametern. Findet sich daran
-	 * eine {@link Value}-Annotation, so wird diese entsprechend behandelt und
-	 * es wird nicht versucht, einen Mock von dieser Klasse zu erzeugen.
+	 * Evaluate the annotations of a method parameter. If a {@link Value}
+	 * -Annotation is found, {@link BeanInstanceProvider#getValue(String)} will
+	 * be used to find the correct instance for the method param.
 	 * 
 	 * @param methodParameterAnnotations
-	 *            Die Annoationen eines MethodenParameters.
-	 * @return Eine Instanz aus den bekannten Values oder null, falls es sowas
-	 *         nicht gibt.
+	 *            The annotations of a Method parameter.
+	 * @return An instance of that value or null, if no {@link Value}-annotation
+	 *         is present.
 	 */
 	private Object evaluateMethodParamAnnotations(
 			Annotation[] methodParameterAnnotations) {
