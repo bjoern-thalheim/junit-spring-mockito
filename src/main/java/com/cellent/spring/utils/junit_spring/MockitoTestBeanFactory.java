@@ -116,13 +116,30 @@ class MockitoTestBeanFactory extends DefaultListableBeanFactory {
 		if (methodParameterAnnotations.length > 0) {
 			for (Annotation annotation : methodParameterAnnotations) {
 				if (annotation instanceof Value) {
-					injectedValue = beanInstanceProvider
-							.getValue(((Value) annotation).value());
+					injectedValue = lookUpValue(((Value) annotation).value());
 					break;
 				}
 			}
 		}
 		return injectedValue;
+	}
+
+	/**
+	 * Look up a value in the application context.
+	 * 
+	 * @param valueKey
+	 *            The key of the value in the annotation.
+	 * @return The value registered in the application context. If none is
+	 *         known, an {@link IllegalArgumentException} is thrown.
+	 */
+	private Object lookUpValue(String valueKey) {
+		Object result;
+		result = beanInstanceProvider.getValue(valueKey);
+		if (result == null) {
+			throw new IllegalArgumentException("@Value-Annotation with key "
+					+ valueKey + ", but no value registered under this key.");
+		}
+		return result;
 	}
 
 	/**

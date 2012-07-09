@@ -65,11 +65,19 @@ public class ValueInjectionTests {
 	@Test
 	public void testMethodParamInjection() {
 		instanceProvider.setValue("methodParamInjectedValue", VALUE);
-		// Hier muss immer noch die entsprechende Klasse gebaut werden, welche
-		// diese Geschichte abbildet.
 		MyBeanWithMethodParamInjected instance = instanceProvider
 				.createBean(MyBeanWithMethodParamInjected.class);
 		assertEquals(VALUE, instance.getValue());
+	}
+
+	/**
+	 * If there is a {@link Value}-Annotation on a method parameter, but no such
+	 * value defined, an exception should be thrown in order to avoid confusion
+	 * follow-up-exceptions.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testValueIsNeededButNotDefined() {
+		instanceProvider.createBean(MyBeanWithMethodParamInjected.class);
 	}
 
 }
