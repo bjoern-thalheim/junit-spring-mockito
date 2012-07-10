@@ -149,20 +149,20 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 	}
 
 	/**
-	 * Hole den Konstruktor der gegebenen Klasse.
+	 * Get the constructor of the desired class.
 	 * 
 	 * @param requiredType
-	 *            Die gewünschte Klasse.
-	 * @return Den Konstructor der gegebenen Klasse.
+	 *            desired Class.
+	 * @return The constructor of the given class.
 	 */
 	private <T> Constructor<?> getAutowiredOrOnlyConstructorOf(
 			Class<T> requiredType) {
 		Constructor<?>[] constructors = requiredType.getConstructors();
-		// Wenn es nur einen Konstruktor gibt, dann ist dieser der einzige,
-		// mit welchem instanziiert werden kann.
+		// If there exists only one constructor, ...
 		if (constructors.length == 1) {
-			// Default Konstruktor abhandeln
+			// ... and its parameterless, this is the default constructor ...
 			if (constructors[0].getParameterTypes().length == 0) {
+				// ... and my be returned.
 				return constructors[0];
 			}
 		}
@@ -171,12 +171,13 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 	}
 
 	/**
-	 * Filtert aus den gegebenen Konstruktoren alle heraus, welche mit
-	 * {@link Autowired} annotiert sind.
+	 * From a List of contructors, filter these which are annotated with
+	 * {@link Autowired}. If there exist several, this is ambigious and will
+	 * result in an Exception.
 	 * 
 	 * @param constructors
-	 *            Alle Konstruktoren der Klasse.
-	 * @return Ein {@link Autowired}-Konstruktor.
+	 *            All Constructors of the Class.
+	 * @return The {@link Autowired}-Constructor of this class.
 	 */
 	private List<Constructor<?>> filterAutowiredConstructors(
 			Constructor<?>[] constructors) {
@@ -215,13 +216,11 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 	}
 
 	/**
-	 * Liefere eine Value-Annotation, falls es eine gibt. Diese kann es nur an
-	 * Feldern, nicht an Methoden geben.
+	 * Give the {@link Value}-Annotation if one is present.
 	 * 
 	 * @param descriptor
-	 *            Der von Spring gefundene Dependency-Descriptor.
-	 * @return Die Value-Annotation, welche an der Dependency dran hängt, oder
-	 *         null, wenn es keine gibt.
+	 *            The Spring {@link DependencyDescriptor}.
+	 * @return The {@link Value}-Annotation if one is present, otherwise null.
 	 */
 	private Value extractValueAnnotation(DependencyDescriptor descriptor) {
 		Value valueAnnotation;
@@ -231,17 +230,15 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 			valueAnnotation = descriptor.getMethodParameter()
 					.getMethodAnnotation(Value.class);
 		}
-		return (valueAnnotation != null) ? valueAnnotation : null;
+		return valueAnnotation;
 	}
 
 	/**
-	 * Nimmt einen {@link DependencyDescriptor} und extrahiert daraus die
-	 * Klasse. Kann entweder ein Methodenparameter oder ein Feld sein, daher ist
-	 * das ein kleines bisschen komplex.
+	 * Extracts the desired Class from the {@link DependencyDescriptor} given.
 	 * 
 	 * @param descriptor
-	 *            Der Spring {@link DependencyDescriptor}.
-	 * @return Die Klasse, welche benötigt wird.
+	 *            The Spring {@link DependencyDescriptor}.
+	 * @return The Class which is needed.
 	 */
 	private Class<?> determineDesiredClassFromFieldOrMethod(
 			DependencyDescriptor descriptor) {
