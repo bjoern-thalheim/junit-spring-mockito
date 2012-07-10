@@ -67,11 +67,11 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 */
 	@SuppressWarnings("rawtypes")
 	public AbstractSpringMockTest() {
-		// Initialisiere den Object Cache ({@link #mockInstanceMap},
-		// Pseudo-ApplicationContext) und den {@link #autowirePostProcessor}.
+		// Init the object cache ({@link #mockInstanceMap},
+		// Pseudo-ApplicationContext) and the {@link #autowirePostProcessor}.
 		mockInstanceMap = new HashMap<Class, Object>();
 		atValueMap = new HashMap<String, Object>();
-		// Spring Infrastruktur
+		// Spring Infrastructure
 		autowirePostProcessor = new AutowiredAnnotationBeanPostProcessor();
 		applicationContext = new GenericApplicationContext(
 				new SpringMockBeanFactory(this));
@@ -88,8 +88,21 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 */
 	public <T> T createBean(Class<T> desiredClass) {
 		T result = applicationContext.getBean(desiredClass);
-		// Führe Field Injection aus.
+		// process field and setter injection
 		autowirePostProcessor.processInjection(result);
+		executeAfterPropertiesSetIfNecessary(result);
+		return result;
+	}
+
+	/**
+	 * If the class implements {@link InitializingBean}, the
+	 * afterPropertiesSet-Method needs to be executed.
+	 * 
+	 * @param result
+	 *            An instantiated bean which may inmplement
+	 *            {@link InitializingBean}.
+	 */
+	private <T> void executeAfterPropertiesSetIfNecessary(T result) {
 		if (result instanceof InitializingBean) {
 			try {
 				((InitializingBean) result).afterPropertiesSet();
@@ -99,7 +112,6 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 								+ e.getMessage(), e);
 			}
 		}
-		return result;
 	}
 
 	/*
@@ -164,6 +176,8 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 		try {
 			applicationContextAware.newInstance().setApplicationContext(
 					this.applicationContext);
+			// after using this, getBean needs to behave differently, so this
+			// switch was included.
 			usedByApplicationContextAware = true;
 		} catch (BeansException e) {
 			throw new RuntimeException(
@@ -198,8 +212,6 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * If true is returned, you can obtain your instance via
 	 * {@link Map#get(Object)} on {@link #mockInstanceMap}.
 	 * 
-	 * @param <T>
-	 * 
 	 * @param clazz
 	 *            The class you are looking for.
 	 * @return true, if {@link #mockInstanceMap} holds an instance of this
@@ -217,7 +229,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	}
 
 	/**
-	 * Create a mocked instance of the desired class.
+	 * Create a mocked instance of the desired class (for example via EasyMock or Mockito).
 	 * 
 	 * @param requiredType
 	 *            The desired class.
