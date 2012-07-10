@@ -16,8 +16,8 @@ public final class EasyMockApplicationContext extends AbstractTestApplicationCon
 	 * createMockInstance(java.lang.Class)
 	 */
 	@Override
-	protected <T> T createMockInstance(Class<T> requiredType) {
-		return EasyMock.createMock(requiredType);
+	protected <T> T createMockInstance(Class<T> clazz) {
+		return EasyMock.createMock(clazz);
 	}
 
 }

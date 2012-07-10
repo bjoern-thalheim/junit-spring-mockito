@@ -37,14 +37,14 @@ public interface TestApplicationContext extends BeanInstanceProvider {
 	 * instance will be subject to Autowire-Processing and filled with the
 	 * instances known in this context (by using {@link #getInstanceOf(Class)}).
 	 * 
-	 * @param desiredClass
+	 * @param clazz
 	 *            The desired class. May not be an interface.
 	 * 
 	 * @return An instance of the desired class, in whcih all fields which are
 	 *         autowired (either via {@link Autowired} or via {@link Value} will
 	 *         be filled.
 	 */
-	<T> T createInstance(Class<T> desiredClass);
+	<T> T createInstance(Class<T> clazz);
 
 	/**
 	 * Register the object given n the context. Whenever after that

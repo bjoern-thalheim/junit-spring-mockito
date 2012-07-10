@@ -89,8 +89,8 @@ public abstract class AbstractTestApplicationContext implements TestApplicationC
 	 * (java.lang.Class)
 	 */
 	@Override
-	public <T> T createInstance(Class<T> desiredClass) {
-		T result = applicationContext.getBean(desiredClass);
+	public <T> T createInstance(Class<T> clazz) {
+		T result = applicationContext.getBean(clazz);
 		// process field and setter injection
 		autowirePostProcessor.processInjection(result);
 		executeAfterPropertiesSetIfNecessary(result);
@@ -252,9 +252,9 @@ public abstract class AbstractTestApplicationContext implements TestApplicationC
 	 * Create a mocked instance of the desired class (for example via EasyMock
 	 * or Mockito).
 	 * 
-	 * @param requiredType
+	 * @param clazz
 	 *            The desired class.
 	 * @return A Mock of the desired class.
 	 */
-	protected abstract <T> T createMockInstance(Class<T> requiredType);
+	protected abstract <T> T createMockInstance(Class<T> clazz);
 }

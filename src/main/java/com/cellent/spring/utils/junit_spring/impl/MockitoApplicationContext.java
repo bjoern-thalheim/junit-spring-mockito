@@ -14,8 +14,8 @@ public final class MockitoApplicationContext extends AbstractTestApplicationCont
 	 * @see com.cellent.spring.utils.junit_spring.impl.AbstractTestApplicationContext#createMockInstance(java.lang.Class)
 	 */
 	@Override
-	protected <T> T createMockInstance(Class<T> requiredType) {
-		return Mockito.mock(requiredType);
+	protected <T> T createMockInstance(Class<T> clazz) {
+		return Mockito.mock(clazz);
 	}
 
 }
