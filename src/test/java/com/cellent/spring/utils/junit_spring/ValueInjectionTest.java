@@ -20,7 +20,7 @@ import com.cellent.spring.utils.junit_spring.support.MyBeanWithValueFieldAndSett
  * 
  * @author bjoern
  */
-public class ValueInjectionTests {
+public class ValueInjectionTest {
 
 	/** Some value which can be injected and checked for afterwards in tests. */
 	private static final String VALUE = "fvztgbuzh!";

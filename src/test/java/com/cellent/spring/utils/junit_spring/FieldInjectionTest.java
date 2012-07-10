@@ -22,7 +22,7 @@ import com.cellent.spring.utils.junit_spring.support.MyInitializingBean;
  * 
  * @author bjoern
  */
-public class FieldInjectionTests {
+public class FieldInjectionTest {
 
 	/** Class under Test. */
 	private TestApplicationContext abstractSpringMockTest;

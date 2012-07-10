@@ -18,7 +18,7 @@ import com.cellent.spring.utils.junit_spring.support.MyDelegate;
  * 
  * @author bjoern
  */
-public class SetterInjectionTests {
+public class SetterInjectionTest {
 
 	/** Class under Test. */
 	private TestApplicationContext abstractSpringMockTest;
