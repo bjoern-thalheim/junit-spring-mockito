@@ -50,6 +50,8 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getBean(Class<T> requiredType) throws BeansException {
+		// TODO this seems dirty (but works) please review the implementation so
+		// that this switch is not necessary.
 		if (beanInstanceProvider.isUsedByApplicationContextAware()) {
 			return beanInstanceProvider.getInstanceOf(requiredType);
 		}
