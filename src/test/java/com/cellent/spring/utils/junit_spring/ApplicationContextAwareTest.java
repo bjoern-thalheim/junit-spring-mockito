@@ -2,6 +2,7 @@ package com.cellent.spring.utils.junit_spring;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContextAware;
 
@@ -21,6 +22,15 @@ import com.cellent.spring.utils.junit_spring.support.MyDelegate;
  */
 public class ApplicationContextAwareTest {
 
+	/** Class under test. */
+	private TestApplicationContext testApplicationContext;
+
+	/** init class under test. */
+	@Before
+	public void init() {
+		testApplicationContext = new MockitoApplicationContext();
+	}
+	
 	/**
 	 * Test scenario in which another Bean is not injected but rather
 	 * initialized in the constructor via {@link ApplicationContextAware}.
@@ -33,7 +43,6 @@ public class ApplicationContextAwareTest {
 	 */
 	@Test
 	public void testApplicationContextAwareDuringNew() {
-		TestApplicationContext testApplicationContext = new MockitoApplicationContext();
 		testApplicationContext
 				.initApplicationContextHolder(MyApplicationContextHolder.class);
 		// somehow we'll end up in a class lookup of the delegate which should
@@ -55,7 +64,6 @@ public class ApplicationContextAwareTest {
 	 */
 	@Test
 	public void testLazyInit() {
-		TestApplicationContext testApplicationContext = new MockitoApplicationContext();
 		MyBeanUsingAppContextAwareLazily instance = testApplicationContext
 				.createInstance(MyBeanUsingAppContextAwareLazily.class);
 		testApplicationContext
