@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import com.cellent.spring.utils.junit_spring.support.MyApplicationContextHolder;
 import com.cellent.spring.utils.junit_spring.support.MyBeanUsingAppConAwareInConstructor;
+import com.cellent.spring.utils.junit_spring.support.MyBeanUsingAppContextAwareLazily;
 import com.cellent.spring.utils.junit_spring.support.MyDelegate;
 
 /**
@@ -21,9 +22,15 @@ public class ApplicationContextAwareTest {
 	/**
 	 * Test scenario in which another Bean is not injected but rather
 	 * initialized in the constructor via {@link ApplicationContextAware}.
+	 * 
+	 * This is a usage example, where the call to the
+	 * {@link ApplicationContextAware}-Instance (for example
+	 * {@link MyApplicationContextHolder#getMyDelegate()} is done during
+	 * instantiation. Please note that the class under Test is instantiated via
+	 * new() and not by {@link BeanInstanceProvider#createBean(Class)}.
 	 */
 	@Test
-	public void testApplicationContextAware() {
+	public void testApplicationContextAwareDuringNew() {
 		BeanInstanceProvider beanInstanceProvider = new SpringMockitoTest();
 		beanInstanceProvider
 				.initApplicationContextHolder(MyApplicationContextHolder.class);
@@ -34,4 +41,24 @@ public class ApplicationContextAwareTest {
 		assertTrue(delegate instanceof MyDelegate);
 	}
 
+	/**
+	 * In case the call to {@link ApplicationContextAware} is done lazily, it is
+	 * possible to use {@link BeanInstanceProvider#createBean(Class)} to
+	 * instantiate the class, because
+	 * {@link BeanInstanceProvider#initApplicationContextHolder(Class)} is done
+	 * afterwards.
+	 * 
+	 * Of course, using new as well is possible. It might even be smarter,
+	 * because this represents usage in production scope better.
+	 */
+	@Test
+	public void testLazyInit() {
+		BeanInstanceProvider beanInstanceProvider = new SpringMockitoTest();
+		MyBeanUsingAppContextAwareLazily instance = beanInstanceProvider
+				.createBean(MyBeanUsingAppContextAwareLazily.class);
+		beanInstanceProvider
+				.initApplicationContextHolder(MyApplicationContextHolder.class);
+		MyDelegate delegate = instance.getMyDelegate();
+		assertTrue(delegate instanceof MyDelegate);
+	}
 }
