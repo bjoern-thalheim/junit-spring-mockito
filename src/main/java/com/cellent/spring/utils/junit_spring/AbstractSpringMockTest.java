@@ -99,7 +99,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * afterPropertiesSet-Method needs to be executed.
 	 * 
 	 * @param result
-	 *            An instantiated bean which may inmplement
+	 *            An instantiated bean which may implement
 	 *            {@link InitializingBean}.
 	 */
 	private <T> void executeAfterPropertiesSetIfNecessary(T result) {
