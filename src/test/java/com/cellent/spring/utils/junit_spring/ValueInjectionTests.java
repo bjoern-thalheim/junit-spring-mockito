@@ -26,12 +26,12 @@ public class ValueInjectionTests {
 	private static final String VALUE = "fvztgbuzh!";
 
 	/** Class under Test. */
-	private TestApplicationContext instanceProvider;
+	private TestApplicationContext testApplicationContext;
 
 	/** Init Class under Test. */
 	@Before
 	public void init() {
-		instanceProvider = new MockitoApplicationContext();
+		testApplicationContext = new MockitoApplicationContext();
 	}
 
 	/**
@@ -39,8 +39,8 @@ public class ValueInjectionTests {
 	 */
 	@Test
 	public void testFieldInjection() {
-		instanceProvider.setValue("fieldInjectedValue", VALUE);
-		MyBeanWithValueFieldAndSetterInjected instance = instanceProvider
+		testApplicationContext.setValue("fieldInjectedValue", VALUE);
+		MyBeanWithValueFieldAndSetterInjected instance = testApplicationContext
 				.createInstance(MyBeanWithValueFieldAndSetterInjected.class);
 		assertNull(instance.getSetterInjectedValue());
 		assertEquals(VALUE, instance.getFieldInjectedValue());
@@ -51,8 +51,8 @@ public class ValueInjectionTests {
 	 */
 	@Test
 	public void testMethodInjection() {
-		instanceProvider.setValue("setterInjectedValue", VALUE);
-		MyBeanWithValueFieldAndSetterInjected instance = instanceProvider
+		testApplicationContext.setValue("setterInjectedValue", VALUE);
+		MyBeanWithValueFieldAndSetterInjected instance = testApplicationContext
 				.createInstance(MyBeanWithValueFieldAndSetterInjected.class);
 		assertNull(instance.getFieldInjectedValue());
 		assertEquals(VALUE, instance.getSetterInjectedValue());
@@ -64,8 +64,8 @@ public class ValueInjectionTests {
 	 */
 	@Test
 	public void testMethodParamInjection() {
-		instanceProvider.setValue("methodParamInjectedValue", VALUE);
-		MyBeanWithMethodParamInjected instance = instanceProvider
+		testApplicationContext.setValue("methodParamInjectedValue", VALUE);
+		MyBeanWithMethodParamInjected instance = testApplicationContext
 				.createInstance(MyBeanWithMethodParamInjected.class);
 		assertEquals(VALUE, instance.getValue());
 	}
@@ -77,7 +77,7 @@ public class ValueInjectionTests {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testValueIsNeededButNotDefinedInMethodParam() {
-		instanceProvider.createInstance(MyBeanWithMethodParamInjected.class);
+		testApplicationContext.createInstance(MyBeanWithMethodParamInjected.class);
 	}
 
 	/**
@@ -88,10 +88,10 @@ public class ValueInjectionTests {
 	 */
 	@Test
 	public void testValueIsNeededButNotDefinedInFieldOrSetterInjection() {
-		instanceProvider.setValue("fieldInjectedValue", null);
-		instanceProvider.setValue("setterInjectedValue", null);
+		testApplicationContext.setValue("fieldInjectedValue", null);
+		testApplicationContext.setValue("setterInjectedValue", null);
 		// the next call should not throw an exception
-		instanceProvider
+		testApplicationContext
 				.createInstance(MyBeanWithValueFieldAndSetterInjected.class);
 	}
 
