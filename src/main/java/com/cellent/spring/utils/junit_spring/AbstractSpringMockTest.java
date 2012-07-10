@@ -105,13 +105,25 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 */
 	private <T> void executeAfterPropertiesSetIfNecessary(T result) {
 		if (result instanceof InitializingBean) {
-			try {
-				((InitializingBean) result).afterPropertiesSet();
-			} catch (Exception e) {
-				throw new RuntimeException(
-						"Class is InitializingBean, but calling afterPropertiesSet leads to an error: "
-								+ e.getMessage(), e);
-			}
+			InitializingBean initializingBean = (InitializingBean) result;
+			safeExecuteAfterPropertiesSet(initializingBean);
+		}
+	}
+
+	/**
+	 * Executes {@link InitializingBean#afterPropertiesSet()}. Throws a runtime
+	 * exception if something goes wrong (this should not happen).
+	 * 
+	 * @param initializingBean
+	 *            An {@link InitializingBean}.
+	 */
+	private void safeExecuteAfterPropertiesSet(InitializingBean initializingBean) {
+		try {
+			initializingBean.afterPropertiesSet();
+		} catch (Exception e) {
+			throw new RuntimeException(
+					"Class is InitializingBean, but calling afterPropertiesSet leads to an error: "
+							+ e.getMessage(), e);
 		}
 	}
 

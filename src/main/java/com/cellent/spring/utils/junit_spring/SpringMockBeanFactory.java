@@ -47,18 +47,48 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 	 * @see org.springframework.beans.factory.support.DefaultListableBeanFactory
 	 * #getBean(java.lang.Class)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getBean(Class<T> requiredType) throws BeansException {
-		// TODO this seems dirty (but works) please review the implementation so
-		// that this switch is not necessary.
+		// create mock or find registered instance (delegate of real class).
 		if (beanInstanceProvider.isUsedByApplicationContextAware()) {
 			return beanInstanceProvider.getInstanceOf(requiredType);
 		}
+		// no delegate, real class using delegates.
+		return createRealInstance(requiredType);
+	}
+
+	/**
+	 * Create a real instance, no mock!
+	 * 
+	 * @param requiredType
+	 *            The Class which shall be created.
+	 * @return An instance of the desired class.
+	 */
+	private <T> T createRealInstance(Class<T> requiredType) {
 		Constructor<?> constructor = getAutowiredOrOnlyConstructorOf(requiredType);
 		Object[] constructorArguments = findOrInstantiate(
 				constructor.getParameterTypes(),
 				constructor.getParameterAnnotations());
+		return safeExecuteNewInstance(requiredType, constructor,
+				constructorArguments);
+	}
+
+	/**
+	 * Use a {@link Constructor#newInstance()}-Call to instantiate a given
+	 * class. If something goes wrong, a {@link UnsupportedOperationException}
+	 * is thrown.
+	 * 
+	 * @param requiredType
+	 *            The class which is created.
+	 * @param constructor
+	 *            The constructor which is used.
+	 * @param constructorArguments
+	 *            The Constructor arguments.
+	 * @return An instance created by the constructor.
+	 */
+	@SuppressWarnings("unchecked")
+	private <T> T safeExecuteNewInstance(Class<T> requiredType,
+			Constructor<?> constructor, Object[] constructorArguments) {
 		try {
 			return (T) constructor.newInstance(constructorArguments);
 		} catch (Exception e) {
@@ -93,13 +123,8 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 			if (injectedValue != null) {
 				result[i] = injectedValue;
 			} else {
-				// The method param is not annotated with @Value. We'll look
-				// into the context to find
-				// an instance of this class.
-				Class<?> paramType = paramTypes[i];
-				Object paramInstance = this.beanInstanceProvider
-						.getInstanceOf(paramType);
-				result[i] = paramInstance;
+				result[i] = this.beanInstanceProvider
+						.getInstanceOf(paramTypes[i]);
 			}
 		}
 		return result;
@@ -164,12 +189,12 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 		if (constructors.length == 1) {
 			// ... and its parameterless, this is the default constructor ...
 			if (constructors[0].getParameterTypes().length == 0) {
-				// ... and my be returned.
+				// ... and should be returned.
 				return constructors[0];
 			}
 		}
-		List<Constructor<?>> autowiredConstructors = filterAutowiredConstructors(constructors);
-		return autowiredConstructors.get(0);
+		// otherwise find autowired constructor and return this one.
+		return filterAutowiredConstructors(constructors);
 	}
 
 	/**
@@ -181,7 +206,7 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 	 *            All Constructors of the Class.
 	 * @return The {@link Autowired}-Constructor of this class.
 	 */
-	private List<Constructor<?>> filterAutowiredConstructors(
+	private Constructor<?> filterAutowiredConstructors(
 			Constructor<?>[] constructors) {
 		List<Constructor<?>> result = new ArrayList<Constructor<?>>(1);
 		for (Constructor<?> constructor : constructors) {
@@ -194,7 +219,7 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 					"Found not exactly one Autowired-Constructor, but "
 							+ result.size() + " Autowired-Constructors.");
 		}
-		return result;
+		return result.get(0);
 	}
 
 	/*
