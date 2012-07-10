@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ InjectionTests.class, ValueInjectionTests.class, ApplicationContextAwareTest.class})
+@SuiteClasses({ FieldInjectionTests.class, SetterInjectionTests.class, ConstructorInjectionTests.class, ValueInjectionTests.class, ApplicationContextAwareTest.class})
 public class AllTests {
 
 }

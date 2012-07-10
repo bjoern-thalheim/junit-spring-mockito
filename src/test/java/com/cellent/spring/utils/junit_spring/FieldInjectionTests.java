@@ -16,7 +16,7 @@ import com.cellent.spring.utils.junit_spring.support.MyBeanWithSetterAutowiredBe
 import com.cellent.spring.utils.junit_spring.support.MyDelegate;
 import com.cellent.spring.utils.junit_spring.support.MyInitializingBean;
 
-public class InjectionTests {
+public class FieldInjectionTests {
 
 	/** Class under Test. */
 	private BeanInstanceProvider abstractSpringMockTest;
@@ -113,50 +113,5 @@ public class InjectionTests {
 		MyDelegate delegate = abstractSpringMockTest
 				.getInstanceOf(MyDelegate.class);
 		verify(delegate).executeVoidCall();
-	}
-
-	/**
-	 * Nachdem Field-Injection geht, hier der Test für die Setter-Injection.
-	 */
-	@Test
-	public void testSetterInjection() {
-		MyBeanWithSetterAutowiredBean instance = abstractSpringMockTest
-				.createBean(MyBeanWithSetterAutowiredBean.class);
-		assertTrue(instance.getDelegate() instanceof MyDelegate);
-	}
-
-	/**
-	 * Prüfe, ob Konstruktor-Injection möglich ist.
-	 */
-	@Test
-	public void testConstructorInjection() {
-		MyBeanWithConstructorAutowiredBean instance = abstractSpringMockTest
-				.createBean(MyBeanWithConstructorAutowiredBean.class);
-		assertTrue(instance.getDelegate() instanceof MyDelegate);
-		MyDelegate delegate = abstractSpringMockTest
-				.getInstanceOf(MyDelegate.class);
-		assertTrue(delegate == instance.getDelegate());
-
-	}
-
-	/**
-	 * Wenn es mehrere Konstruktoren gibt, muss der ausgeführt werden, welcher
-	 * mit Autowired annotiert ist.
-	 */
-	@Test
-	public void testMultipleConstructors() {
-		MyBeanWithConstructorAutowiredBeanAndOtherConstructor instance = abstractSpringMockTest
-				.createBean(MyBeanWithConstructorAutowiredBeanAndOtherConstructor.class);
-		MyDelegate delegate = abstractSpringMockTest
-				.getInstanceOf(MyDelegate.class);
-		assertTrue(delegate == instance.getDelegate());
-	}
-	
-	/**
-	 * Wenn es einen Konstruktor gibt, dieser aber nicht Autowired ist, aber Argumente hat, dann können wir nicht wissen, wie dieser instanziiert werden muss und es muss ein Fehler kommen.
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testOneConstructorDefinedButNotAutowired() {
-		abstractSpringMockTest.createBean(MyBeanWithNonDefaultNonAutowiredConstructor.class);
 	}
 }
