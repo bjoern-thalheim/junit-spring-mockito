@@ -1,4 +1,4 @@
-package com.cellent.spring.utils.junit_spring;
+package com.cellent.spring.utils.junit_spring.impl;
 
 import org.easymock.EasyMock;
 
@@ -7,12 +7,12 @@ import org.easymock.EasyMock;
  * 
  * @author bjoern
  */
-public final class SpringEasyMockTest extends AbstractSpringMockTest {
+public final class EasyMockApplicationContext extends AbstractTestApplicationContext {
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.cellent.spring.utils.junit_spring.AbstractSpringMockTest#
+	 * @see com.cellent.spring.utils.junit_spring.impl.AbstractTestApplicationContext#
 	 * createMockInstance(java.lang.Class)
 	 */
 	@Override

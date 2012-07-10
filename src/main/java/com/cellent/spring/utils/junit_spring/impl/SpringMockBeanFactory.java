@@ -1,4 +1,4 @@
-package com.cellent.spring.utils.junit_spring;
+package com.cellent.spring.utils.junit_spring.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -15,30 +15,33 @@ import org.springframework.beans.factory.config.DependencyDescriptor;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.MethodParameter;
 
+import com.cellent.spring.utils.junit_spring.api.BeanInstanceProvider;
+import com.cellent.spring.utils.junit_spring.api.TestApplicationContext;
+
 /**
- * Bean factory, which uses {@link BeanInstanceProvider#getInstanceOf(Class)}
- * and {@link BeanInstanceProvider#getValue(String)} to to autowiring without a
- * spring context.
+ * Bean factory, which uses {@link TestApplicationContext#getInstanceOf(Class)}
+ * and {@link TestApplicationContext#getValue(String)} to to autowiring without
+ * a spring context.
  * 
  * @author bjoern
  */
 class SpringMockBeanFactory extends DefaultListableBeanFactory {
 
 	/**
-	 * The {@link BeanInstanceProvider} which takes care of object creation and
-	 * management.
+	 * The {@link TestApplicationContext} which takes care of object creation
+	 * and management.
 	 */
-	private final BeanInstanceProvider beanInstanceProvider;
+	private final BeanInstanceProvider testApplicationContext;
 
 	/**
 	 * Constructor of this class.
 	 * 
-	 * @param beanInstanceProvider
-	 *            The {@link BeanInstanceProvider} which takes care of object
+	 * @param testApplicationContext
+	 *            The {@link TestApplicationContext} which takes care of object
 	 *            creation and management.
 	 */
-	SpringMockBeanFactory(BeanInstanceProvider abstractSpringMockTest) {
-		this.beanInstanceProvider = abstractSpringMockTest;
+	SpringMockBeanFactory(TestApplicationContext abstractSpringMockTest) {
+		this.testApplicationContext = abstractSpringMockTest;
 	}
 
 	/*
@@ -50,8 +53,8 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 	@Override
 	public <T> T getBean(Class<T> requiredType) throws BeansException {
 		// create mock or find registered instance (delegate of real class).
-		if (beanInstanceProvider.isUsedByApplicationContextAware()) {
-			return beanInstanceProvider.getInstanceOf(requiredType);
+		if (testApplicationContext.isUsedByApplicationContextAware()) {
+			return testApplicationContext.getInstanceOf(requiredType);
 		}
 		// no delegate, real class using delegates.
 		return createRealInstance(requiredType);
@@ -123,7 +126,7 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 			if (injectedValue != null) {
 				result[i] = injectedValue;
 			} else {
-				result[i] = this.beanInstanceProvider
+				result[i] = this.testApplicationContext
 						.getInstanceOf(paramTypes[i]);
 			}
 		}
@@ -132,8 +135,8 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 
 	/**
 	 * Evaluate the annotations of a method parameter. If a {@link Value}
-	 * -Annotation is found, {@link BeanInstanceProvider#getValue(String)} will
-	 * be used to find the correct instance for the method param.
+	 * -Annotation is found, {@link TestApplicationContext#getValue(String)}
+	 * will be used to find the correct instance for the method param.
 	 * 
 	 * @param methodParameterAnnotations
 	 *            The annotations of a Method parameter.
@@ -167,7 +170,7 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 	 */
 	private Object lookUpValue(String valueKey, boolean nullIsLegal) {
 		Object result;
-		result = beanInstanceProvider.getValue(valueKey);
+		result = testApplicationContext.getValue(valueKey);
 		if (result != null || nullIsLegal) {
 			return result;
 		}
@@ -239,7 +242,7 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 			return lookUpValue(valueAnnotation.value(), true);
 		}
 		Class<?> desiredClass = determineDesiredClassFromFieldOrMethod(descriptor);
-		return this.beanInstanceProvider.getInstanceOf(desiredClass);
+		return this.testApplicationContext.getInstanceOf(desiredClass);
 	}
 
 	/**

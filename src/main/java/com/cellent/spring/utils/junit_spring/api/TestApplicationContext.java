@@ -1,4 +1,4 @@
-package com.cellent.spring.utils.junit_spring;
+package com.cellent.spring.utils.junit_spring.api;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,12 @@ import org.springframework.context.ApplicationContextAware;
  * For Object Autowiring via {@link Autowired} you may do the following:
  * {@link #registerInstance(Object)} to register an object which you want to
  * autowire (so you are in full control over the instantiation of ths object),
- * {@link #createBean(Class)} to actually create the class under test. To obtain
+ * {@link #createInstance(Class)} to actually create the class under test. To obtain
  * your registered object, you may use {@link #getInstanceOf(Class)} in your
  * test class.
  * 
  * If you want a mocked intance to be autowired, simply use
- * {@link #createBean(Class)} to create the class under test. All Beans which
+ * {@link #createInstance(Class)} to create the class under test. All Beans which
  * are autowired into the class will be created with your favorite mocking
  * framework.
  * 
@@ -32,18 +32,7 @@ import org.springframework.context.ApplicationContextAware;
  * @author bjoern
  * 
  */
-public interface BeanInstanceProvider {
-
-	/**
-	 * Find an instance of the desired class in the context. If none is known so
-	 * far, a Mock of this class is created, put into the context and returned.
-	 * 
-	 * @param clazz
-	 *            The desired class.
-	 * @return An instance of the desired class, either a newly created mock or
-	 *         the instance already known to the context.
-	 */
-	<T> T getInstanceOf(Class<T> clazz);
+public interface TestApplicationContext extends BeanInstanceProvider {
 
 	/**
 	 * Create an instance (no mock!) if the desired class. All fields of this
@@ -57,7 +46,7 @@ public interface BeanInstanceProvider {
 	 *         autowired (either via {@link Autowired} or via {@link Value} will
 	 *         be filled.
 	 */
-	<T> T createBean(Class<T> desiredClass);
+	<T> T createInstance(Class<T> desiredClass);
 
 	/**
 	 * Register the object given n the context. Whenever after that
@@ -80,16 +69,6 @@ public interface BeanInstanceProvider {
 	void setValue(String key, Object value);
 
 	/**
-	 * Provide the object which was registered under the given {@link Value}
-	 * -Key. If none os known, null will be returned.
-	 * 
-	 * @param value
-	 *            The key of the {@link Value}-Annotation.
-	 * @return The value of this annotation or null if no such value is known.
-	 */
-	Object getValue(String value);
-
-	/**
 	 * Put the applicationContext of this class into the given
 	 * {@link ApplicationContextAware}. This way, classes using this
 	 * {@link ApplicationContextAware} can use this context without having to do
@@ -99,15 +78,5 @@ public interface BeanInstanceProvider {
 	 */
 	void initApplicationContextHolder(
 			Class<? extends ApplicationContextAware> applicationContextAware);
-
-	/**
-	 * If this class is used by applicationContextAware
-	 * {@link BeanFactory#getBean(Class)} needs to instantiate Mocks but no real
-	 * instances. To make this distinction possible, we need this switch.
-	 * 
-	 * @return true, if the {@link ApplicationContext} in this class is used by
-	 *         an {@link ApplicationContextAware}-Instance.
-	 */
-	boolean isUsedByApplicationContextAware();
 
 }

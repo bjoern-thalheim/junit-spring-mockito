@@ -1,4 +1,4 @@
-package com.cellent.spring.utils.junit_spring;
+package com.cellent.spring.utils.junit_spring.impl;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,6 +16,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.GenericApplicationContext;
 
+import com.cellent.spring.utils.junit_spring.api.TestApplicationContext;
+
 /**
  * Class which contains a kind of application context, to make autowiring work
  * in tests without having to build up a real application context. It vontains a
@@ -24,7 +26,7 @@ import org.springframework.context.support.GenericApplicationContext;
  * 
  * @author bjoern
  */
-public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
+public abstract class AbstractTestApplicationContext implements TestApplicationContext {
 
 	/**
 	 * A Map with all {@link Value}s.
@@ -63,10 +65,10 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * Create an object (you might call it context or factory as well) which
 	 * allows to do spring autowiring also in test classes without any special
 	 * test runner. Eventually, instantiate the class under Test by
-	 * {@link #createBean(Class)}.
+	 * {@link #createInstance(Class)}.
 	 */
 	@SuppressWarnings("rawtypes")
-	public AbstractSpringMockTest() {
+	public AbstractTestApplicationContext() {
 		// Init the object cache ({@link #mockInstanceMap},
 		// Pseudo-ApplicationContext) and the {@link #autowirePostProcessor}.
 		mockInstanceMap = new HashMap<Class, Object>();
@@ -83,11 +85,11 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.cellent.spring.utils.junit_spring.BeanInstanceProvider#createBean
+	 * com.cellent.spring.utils.junit_spring.impl.TestApplicationContext#createBean
 	 * (java.lang.Class)
 	 */
 	@Override
-	public <T> T createBean(Class<T> desiredClass) {
+	public <T> T createInstance(Class<T> desiredClass) {
 		T result = applicationContext.getBean(desiredClass);
 		// process field and setter injection
 		autowirePostProcessor.processInjection(result);
@@ -131,7 +133,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.cellent.spring.utils.junit_spring.BeanInstanceProvider#registerInstance
+	 * com.cellent.spring.utils.junit_spring.impl.TestApplicationContext#registerInstance
 	 * (java.lang.Object)
 	 */
 	@Override
@@ -143,7 +145,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.cellent.spring.utils.junit_spring.BeanInstanceProvider#getInstanceOf
+	 * com.cellent.spring.utils.junit_spring.impl.TestApplicationContext#getInstanceOf
 	 * (java.lang.Class)
 	 */
 	@SuppressWarnings("unchecked")
@@ -162,7 +164,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.cellent.spring.utils.junit_spring.BeanInstanceProvider#setValue(java
+	 * com.cellent.spring.utils.junit_spring.impl.TestApplicationContext#setValue(java
 	 * .lang.String, java.lang.Object)
 	 */
 	@Override
@@ -174,7 +176,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.cellent.spring.utils.junit_spring.BeanInstanceProvider#getValue(java
+	 * com.cellent.spring.utils.junit_spring.impl.TestApplicationContext#getValue(java
 	 * .lang.String)
 	 */
 	@Override
@@ -185,7 +187,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#
+	 * @see com.cellent.spring.utils.junit_spring.impl.TestApplicationContext#
 	 * initApplicationContextHolder(java.lang.Class)
 	 */
 	@Override
@@ -215,7 +217,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#
+	 * @see com.cellent.spring.utils.junit_spring.impl.TestApplicationContext#
 	 * isUsedByApplicationContextAware()
 	 */
 	public boolean isUsedByApplicationContextAware() {

@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.cellent.spring.utils.junit_spring.api.TestApplicationContext;
+import com.cellent.spring.utils.junit_spring.impl.MockitoApplicationContext;
 import com.cellent.spring.utils.junit_spring.support.MyBean;
 import com.cellent.spring.utils.junit_spring.support.MyBeanWithFieldAutowiredBean;
 import com.cellent.spring.utils.junit_spring.support.MyDelegate;
@@ -23,14 +25,14 @@ import com.cellent.spring.utils.junit_spring.support.MyInitializingBean;
 public class FieldInjectionTests {
 
 	/** Class under Test. */
-	private BeanInstanceProvider abstractSpringMockTest;
+	private TestApplicationContext abstractSpringMockTest;
 
 	/**
 	 * Init Class under Test.
 	 */
 	@Before
 	public void init() {
-		abstractSpringMockTest = new SpringMockitoTest();
+		abstractSpringMockTest = new MockitoApplicationContext();
 	}
 
 	/**
@@ -39,7 +41,7 @@ public class FieldInjectionTests {
 	 */
 	@Test
 	public void testNoInjection() {
-		MyBean bean = abstractSpringMockTest.createBean(MyBean.class);
+		MyBean bean = abstractSpringMockTest.createInstance(MyBean.class);
 		assertTrue(bean instanceof MyBean);
 	}
 
@@ -50,19 +52,19 @@ public class FieldInjectionTests {
 	@Test
 	public void testWithAutowiredBean() {
 		MyBeanWithFieldAutowiredBean bean = abstractSpringMockTest
-				.createBean(MyBeanWithFieldAutowiredBean.class);
+				.createInstance(MyBeanWithFieldAutowiredBean.class);
 		assertTrue(bean.getDelegate() instanceof MyDelegate);
 	}
 
 	/**
 	 * The instance injected into the class under test needs to be exactly the
-	 * same as in {@link BeanInstanceProvider#getInstanceOf(Class)}, because
+	 * same as in {@link TestApplicationContext#getInstanceOf(Class)}, because
 	 * this is the mock to work with in the test cases.
 	 */
 	@Test
 	public void testGetMockAfterAutowiring() {
 		MyBeanWithFieldAutowiredBean bean = abstractSpringMockTest
-				.createBean(MyBeanWithFieldAutowiredBean.class);
+				.createInstance(MyBeanWithFieldAutowiredBean.class);
 		MyDelegate delegate = bean.getDelegate();
 		MyDelegate mock = abstractSpringMockTest
 				.getInstanceOf(MyDelegate.class);
@@ -93,7 +95,7 @@ public class FieldInjectionTests {
 		assertTrue(registeredBean == abstractSpringMockTest
 				.getInstanceOf(MyDelegate.class));
 		MyBeanWithFieldAutowiredBean owningBean = abstractSpringMockTest
-				.createBean(MyBeanWithFieldAutowiredBean.class);
+				.createInstance(MyBeanWithFieldAutowiredBean.class);
 		assertTrue(registeredBean == owningBean.getDelegate());
 	}
 
@@ -101,21 +103,21 @@ public class FieldInjectionTests {
 	 * If a bean with a delegate is instantiated and no instantiation candidate
 	 * for this delegate was registered before, the instance which is injected
 	 * and the instance whcih can be obtained via
-	 * {@link BeanInstanceProvider#getInstanceOf(Class)} need to be exactly the
+	 * {@link TestApplicationContext#getInstanceOf(Class)} need to be exactly the
 	 * same.
 	 */
 	@Test
 	public void testGetCorrectMockInstance() {
 		MyBeanWithFieldAutowiredBean owningBean = abstractSpringMockTest
-				.createBean(MyBeanWithFieldAutowiredBean.class);
+				.createInstance(MyBeanWithFieldAutowiredBean.class);
 		MyDelegate delegate = abstractSpringMockTest
 				.getInstanceOf(MyDelegate.class);
 		assertTrue(delegate == owningBean.getDelegate());
 		// Try again in reverse order. Re-instantiate to do so cleanly.
-		abstractSpringMockTest = new SpringMockitoTest();
+		abstractSpringMockTest = new MockitoApplicationContext();
 		delegate = abstractSpringMockTest.getInstanceOf(MyDelegate.class);
 		owningBean = abstractSpringMockTest
-				.createBean(MyBeanWithFieldAutowiredBean.class);
+				.createInstance(MyBeanWithFieldAutowiredBean.class);
 		assertTrue(delegate == owningBean.getDelegate());
 	}
 
@@ -126,7 +128,7 @@ public class FieldInjectionTests {
 	 */
 	@Test
 	public void testAfterPropertiesSet() {
-		abstractSpringMockTest.createBean(MyInitializingBean.class);
+		abstractSpringMockTest.createInstance(MyInitializingBean.class);
 		MyDelegate delegate = abstractSpringMockTest
 				.getInstanceOf(MyDelegate.class);
 		verify(delegate).executeVoidCall();

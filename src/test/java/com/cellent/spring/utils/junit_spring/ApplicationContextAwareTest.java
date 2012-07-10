@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.springframework.context.ApplicationContextAware;
 
+import com.cellent.spring.utils.junit_spring.api.TestApplicationContext;
+import com.cellent.spring.utils.junit_spring.impl.MockitoApplicationContext;
 import com.cellent.spring.utils.junit_spring.support.MyApplicationContextHolder;
 import com.cellent.spring.utils.junit_spring.support.MyBeanUsingAppConAwareInConstructor;
 import com.cellent.spring.utils.junit_spring.support.MyBeanUsingAppContextAwareLazily;
@@ -27,12 +29,12 @@ public class ApplicationContextAwareTest {
 	 * {@link ApplicationContextAware}-Instance (for example
 	 * {@link MyApplicationContextHolder#getMyDelegate()} is done during
 	 * instantiation. Please note that the class under Test is instantiated via
-	 * new() and not by {@link BeanInstanceProvider#createBean(Class)}.
+	 * new() and not by {@link TestApplicationContext#createInstance(Class)}.
 	 */
 	@Test
 	public void testApplicationContextAwareDuringNew() {
-		BeanInstanceProvider beanInstanceProvider = new SpringMockitoTest();
-		beanInstanceProvider
+		TestApplicationContext testApplicationContext = new MockitoApplicationContext();
+		testApplicationContext
 				.initApplicationContextHolder(MyApplicationContextHolder.class);
 		// somehow we'll end up in a class lookup of the delegate which should
 		// be mocked then.
@@ -43,9 +45,9 @@ public class ApplicationContextAwareTest {
 
 	/**
 	 * In case the call to {@link ApplicationContextAware} is done lazily, it is
-	 * possible to use {@link BeanInstanceProvider#createBean(Class)} to
+	 * possible to use {@link TestApplicationContext#createInstance(Class)} to
 	 * instantiate the class, because
-	 * {@link BeanInstanceProvider#initApplicationContextHolder(Class)} is done
+	 * {@link TestApplicationContext#initApplicationContextHolder(Class)} is done
 	 * afterwards.
 	 * 
 	 * Of course, using new as well is possible. It might even be smarter,
@@ -53,10 +55,10 @@ public class ApplicationContextAwareTest {
 	 */
 	@Test
 	public void testLazyInit() {
-		BeanInstanceProvider beanInstanceProvider = new SpringMockitoTest();
-		MyBeanUsingAppContextAwareLazily instance = beanInstanceProvider
-				.createBean(MyBeanUsingAppContextAwareLazily.class);
-		beanInstanceProvider
+		TestApplicationContext testApplicationContext = new MockitoApplicationContext();
+		MyBeanUsingAppContextAwareLazily instance = testApplicationContext
+				.createInstance(MyBeanUsingAppContextAwareLazily.class);
+		testApplicationContext
 				.initApplicationContextHolder(MyApplicationContextHolder.class);
 		MyDelegate delegate = instance.getMyDelegate();
 		assertTrue(delegate instanceof MyDelegate);

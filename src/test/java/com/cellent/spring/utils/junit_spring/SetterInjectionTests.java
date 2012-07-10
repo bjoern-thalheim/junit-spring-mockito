@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.cellent.spring.utils.junit_spring.api.TestApplicationContext;
+import com.cellent.spring.utils.junit_spring.impl.MockitoApplicationContext;
 import com.cellent.spring.utils.junit_spring.support.MyBeanWithSetterAutowiredBean;
 import com.cellent.spring.utils.junit_spring.support.MyDelegate;
 
@@ -19,14 +21,14 @@ import com.cellent.spring.utils.junit_spring.support.MyDelegate;
 public class SetterInjectionTests {
 
 	/** Class under Test. */
-	private BeanInstanceProvider abstractSpringMockTest;
+	private TestApplicationContext abstractSpringMockTest;
 
 	/**
 	 * Init Class under Test.
 	 */
 	@Before
 	public void init() {
-		abstractSpringMockTest = new SpringMockitoTest();
+		abstractSpringMockTest = new MockitoApplicationContext();
 	}
 
 	/**
@@ -35,7 +37,7 @@ public class SetterInjectionTests {
 	@Test
 	public void testSetterInjection() {
 		MyBeanWithSetterAutowiredBean instance = abstractSpringMockTest
-				.createBean(MyBeanWithSetterAutowiredBean.class);
+				.createInstance(MyBeanWithSetterAutowiredBean.class);
 		assertTrue(instance.getDelegate() instanceof MyDelegate);
 	}
 }
