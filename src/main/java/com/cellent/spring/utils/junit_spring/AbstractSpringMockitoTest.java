@@ -6,12 +6,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.mockito.Mockito;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.TypeConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.DependencyDescriptor;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**
@@ -144,20 +146,37 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 		return atValueMap.get(value);
 	}
 
-	/**
-	 * Search fo a class in a set of known instances. If one is found, a pair of
-	 * class/object will be cached in {@link #mockInstanceMap} and true is
-	 * returned, otherwise false.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * If true is returned, you can obtain your instance via
-	 * {@link Map#get(Object)} on {@link #mockInstanceMap}.
-	 * 
-	 * @param clazz
-	 *            The class you are looking for.
-	 * @return true, if {@link #mockInstanceMap} holds an instance of this
-	 *         class, false otherwise.
+	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#
+	 * initApplicationContextHolder(java.lang.Class)
 	 */
-	private <T> boolean discoverInstanceOf(Class<T> clazz) {
+	public void initApplicationContextHolder(
+			Class<? extends ApplicationContextAware> applicationContextAware) {
+		try {
+			applicationContextAware.newInstance().setApplicationContext(
+					this.applicationContext);
+		} catch (BeansException e) {
+			throw new RuntimeException(
+					"I should be able to instantiate the applicationContextAware ...",
+					e);
+		} catch (InstantiationException e) {
+			throw new RuntimeException(
+					"I should be able to instantiate the applicationContextAware ...",
+					e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(
+					"I should be able to instantiate the applicationContextAware ...",
+					e);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#discoverInstanceOf(java.lang.Class)
+	 */
+	public <T> boolean discoverInstanceOf(Class<T> clazz) {
 		Collection<Object> instaces = mockInstanceMap.values();
 		for (Object object : instaces) {
 			if (clazz.isInstance(object)) {

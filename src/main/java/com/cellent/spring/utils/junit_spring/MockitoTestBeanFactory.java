@@ -50,6 +50,11 @@ class MockitoTestBeanFactory extends DefaultListableBeanFactory {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getBean(Class<T> requiredType) throws BeansException {
+		// TODO: use getInstanceOf if this applicationContext is used within
+		// applicationContextAware, otherwise use a real instantiation.
+		if (beanInstanceProvider.discoverInstanceOf(requiredType)) {
+			return beanInstanceProvider.getInstanceOf(requiredType);
+		}
 		Constructor<?> constructor = getAutowiredOrOnlyConstructorOf(requiredType);
 		Object[] constructorArguments = findOrInstantiate(
 				constructor.getParameterTypes(),

@@ -1,7 +1,10 @@
 package com.cellent.spring.utils.junit_spring;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * Interface for a class providing instantiation methods for Spring beans in
@@ -85,5 +88,31 @@ public interface BeanInstanceProvider {
 	 * @return The value of this annotation or null if no such value is known.
 	 */
 	Object getValue(String value);
+
+	/**
+	 * Put the applicationContext of this class into the given
+	 * {@link ApplicationContextAware}. This way, classes using this
+	 * {@link ApplicationContextAware} can use this context without having to do
+	 * injection.
+	 * 
+	 * @param applicationContextAware
+	 */
+	void initApplicationContextHolder(Class<? extends ApplicationContextAware> applicationContextAware);
+
+	/**
+	 * Search for a class in a set of known instances. If one is found, a pair of
+	 * class/object will be cached in {@link #mockInstanceMap} and true is
+	 * returned, otherwise false.
+	 * 
+	 * If true is returned, you can obtain your instance via
+	 * {@link Map#get(Object)} on {@link #mockInstanceMap}.
+	 * @param <T>
+	 * 
+	 * @param clazz
+	 *            The class you are looking for.
+	 * @return true, if {@link #mockInstanceMap} holds an instance of this
+	 *         class, false otherwise.
+	 */
+	public abstract <T> boolean discoverInstanceOf(Class<T> clazz);
 
 }
