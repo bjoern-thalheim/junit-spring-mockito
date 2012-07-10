@@ -210,13 +210,6 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 		if ((valueAnnotation = extractValueAnnotation(descriptor)) != null) {
 			return lookUpValue(valueAnnotation.value(), true);
 		}
-		// Field field = descriptor.getField();
-		// if (field != null) {
-		// Value valueAnnotation = field.getAnnotation(Value.class);
-		// if (valueAnnotation != null) {
-		// return beanInstanceProvider.getValue(valueAnnotation.value());
-		// }
-		// }
 		Class<?> desiredClass = determineDesiredClassFromFieldOrMethod(descriptor);
 		return this.beanInstanceProvider.getInstanceOf(desiredClass);
 	}
