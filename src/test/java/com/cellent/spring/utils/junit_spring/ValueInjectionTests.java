@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.cellent.spring.utils.junit_spring.support.MyBeanWithMethodParamInjected;
-import com.cellent.spring.utils.junit_spring.support.MyBeanWithValueInjected;
+import com.cellent.spring.utils.junit_spring.support.MyBeanWithValueFieldAndSetterInjected;
 
 /**
  * Tests für die {@link Value}-Annotation. Siehe hierzu auch:
@@ -38,8 +38,8 @@ public class ValueInjectionTests {
 	@Test
 	public void testFieldInjection() {
 		instanceProvider.setValue("fieldInjectedValue", VALUE);
-		MyBeanWithValueInjected instance = instanceProvider
-				.createBean(MyBeanWithValueInjected.class);
+		MyBeanWithValueFieldAndSetterInjected instance = instanceProvider
+				.createBean(MyBeanWithValueFieldAndSetterInjected.class);
 		assertNull(instance.getSetterInjectedValue());
 		assertEquals(VALUE, instance.getFieldInjectedValue());
 	}
@@ -51,8 +51,8 @@ public class ValueInjectionTests {
 	@Test
 	public void testMethodInjection() {
 		instanceProvider.setValue("setterInjectedValue", VALUE);
-		MyBeanWithValueInjected instance = instanceProvider
-				.createBean(MyBeanWithValueInjected.class);
+		MyBeanWithValueFieldAndSetterInjected instance = instanceProvider
+				.createBean(MyBeanWithValueFieldAndSetterInjected.class);
 		assertNull(instance.getFieldInjectedValue());
 		assertEquals(VALUE, instance.getSetterInjectedValue());
 	}
@@ -76,8 +76,22 @@ public class ValueInjectionTests {
 	 * follow-up-exceptions.
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void testValueIsNeededButNotDefined() {
+	public void testValueIsNeededButNotDefinedInMethodParam() {
 		instanceProvider.createBean(MyBeanWithMethodParamInjected.class);
+	}
+
+	/**
+	 * If there is a {@link Value}-Annotation on a field, but no such value
+	 * defined, no exception shall be thrown. This is useful because in test
+	 * scope it might be completely legal to leave values blank which you don't
+	 * need.
+	 */
+	@Test
+	public void testValueIsNeededButNotDefinedInFieldOrSetterInjection() {
+		instanceProvider.setValue("fieldInjectedValue", null);
+		instanceProvider.setValue("setterInjectedValue", null);
+		// the next call should not throw an exception
+		instanceProvider.createBean(MyBeanWithValueFieldAndSetterInjected.class);
 	}
 
 }

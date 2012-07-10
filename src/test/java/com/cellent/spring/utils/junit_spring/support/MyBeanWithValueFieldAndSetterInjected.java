@@ -2,7 +2,7 @@ package com.cellent.spring.utils.junit_spring.support;
 
 import org.springframework.beans.factory.annotation.Value;
 
-public class MyBeanWithValueInjected {
+public class MyBeanWithValueFieldAndSetterInjected {
 	
 	@Value("fieldInjectedValue")
 	String value;

@@ -116,7 +116,8 @@ class MockitoTestBeanFactory extends DefaultListableBeanFactory {
 		if (methodParameterAnnotations.length > 0) {
 			for (Annotation annotation : methodParameterAnnotations) {
 				if (annotation instanceof Value) {
-					injectedValue = lookUpValue(((Value) annotation).value());
+					injectedValue = lookUpValue(((Value) annotation).value(),
+							false);
 					break;
 				}
 			}
@@ -129,17 +130,19 @@ class MockitoTestBeanFactory extends DefaultListableBeanFactory {
 	 * 
 	 * @param valueKey
 	 *            The key of the value in the annotation.
+	 * @param nullIsLegal
+	 *            Whether a missing instance shall lead to an exception or not.
 	 * @return The value registered in the application context. If none is
 	 *         known, an {@link IllegalArgumentException} is thrown.
 	 */
-	private Object lookUpValue(String valueKey) {
+	private Object lookUpValue(String valueKey, boolean nullIsLegal) {
 		Object result;
 		result = beanInstanceProvider.getValue(valueKey);
-		if (result == null) {
-			throw new IllegalArgumentException("@Value-Annotation with key "
-					+ valueKey + ", but no value registered under this key.");
+		if (result != null || nullIsLegal) {
+			return result;
 		}
-		return result;
+		throw new IllegalArgumentException("@Value-Annotation with key "
+				+ valueKey + ", but no value registered under this key.");
 	}
 
 	/**
@@ -202,7 +205,7 @@ class MockitoTestBeanFactory extends DefaultListableBeanFactory {
 			TypeConverter typeConverter) throws BeansException {
 		Value valueAnnotation = null;
 		if ((valueAnnotation = extractValueAnnotation(descriptor)) != null) {
-			return beanInstanceProvider.getValue(valueAnnotation.value());
+			return lookUpValue(valueAnnotation.value(), true);
 		}
 		// Field field = descriptor.getField();
 		// if (field != null) {
