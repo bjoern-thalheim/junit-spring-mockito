@@ -218,8 +218,8 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 *         class, false otherwise.
 	 */
 	private <T> boolean discoverInstanceOf(Class<T> clazz) {
-		Collection<Object> instaces = mockInstanceMap.values();
-		for (Object object : instaces) {
+		Collection<Object> instances = mockInstanceMap.values();
+		for (Object object : instances) {
 			if (clazz.isInstance(object)) {
 				mockInstanceMap.put(clazz, object);
 				return true;
