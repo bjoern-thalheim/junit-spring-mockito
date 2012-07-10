@@ -15,6 +15,7 @@ public final class SpringEasyMockTest extends AbstractSpringMockTest {
 	 * @see com.cellent.spring.utils.junit_spring.AbstractSpringMockTest#
 	 * createMockInstance(java.lang.Class)
 	 */
+	@Override
 	protected <T> T createMockInstance(Class<T> requiredType) {
 		return EasyMock.createMock(requiredType);
 	}

@@ -86,6 +86,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * com.cellent.spring.utils.junit_spring.BeanInstanceProvider#createBean
 	 * (java.lang.Class)
 	 */
+	@Override
 	public <T> T createBean(Class<T> desiredClass) {
 		T result = applicationContext.getBean(desiredClass);
 		// process field and setter injection
@@ -121,6 +122,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * com.cellent.spring.utils.junit_spring.BeanInstanceProvider#registerInstance
 	 * (java.lang.Object)
 	 */
+	@Override
 	public void registerInstance(Object beanInstance) {
 		mockInstanceMap.put(beanInstance.getClass(), beanInstance);
 	}
@@ -133,6 +135,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * (java.lang.Class)
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public <T> T getInstanceOf(Class<T> clazz) {
 		if (mockInstanceMap.containsKey(clazz) || discoverInstanceOf(clazz))
 			return (T) mockInstanceMap.get(clazz);
@@ -150,6 +153,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * com.cellent.spring.utils.junit_spring.BeanInstanceProvider#setValue(java
 	 * .lang.String, java.lang.Object)
 	 */
+	@Override
 	public void setValue(String key, Object value) {
 		atValueMap.put(key, value);
 	}
@@ -161,6 +165,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * com.cellent.spring.utils.junit_spring.BeanInstanceProvider#getValue(java
 	 * .lang.String)
 	 */
+	@Override
 	public Object getValue(String value) {
 		return atValueMap.get(value);
 	}
@@ -171,6 +176,7 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#
 	 * initApplicationContextHolder(java.lang.Class)
 	 */
+	@Override
 	public void initApplicationContextHolder(
 			Class<? extends ApplicationContextAware> applicationContextAware) {
 		try {
@@ -229,7 +235,8 @@ public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 	}
 
 	/**
-	 * Create a mocked instance of the desired class (for example via EasyMock or Mockito).
+	 * Create a mocked instance of the desired class (for example via EasyMock
+	 * or Mockito).
 	 * 
 	 * @param requiredType
 	 *            The desired class.
