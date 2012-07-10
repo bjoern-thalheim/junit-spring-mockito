@@ -8,11 +8,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.cellent.spring.utils.junit_spring.support.MyBean;
-import com.cellent.spring.utils.junit_spring.support.MyBeanWithConstructorAutowiredBean;
-import com.cellent.spring.utils.junit_spring.support.MyBeanWithConstructorAutowiredBeanAndOtherConstructor;
 import com.cellent.spring.utils.junit_spring.support.MyBeanWithFieldAutowiredBean;
-import com.cellent.spring.utils.junit_spring.support.MyBeanWithNonDefaultNonAutowiredConstructor;
-import com.cellent.spring.utils.junit_spring.support.MyBeanWithSetterAutowiredBean;
 import com.cellent.spring.utils.junit_spring.support.MyDelegate;
 import com.cellent.spring.utils.junit_spring.support.MyInitializingBean;
 
