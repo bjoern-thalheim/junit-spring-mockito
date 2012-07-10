@@ -2,8 +2,10 @@ package com.cellent.spring.utils.junit_spring;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
@@ -97,22 +99,17 @@ public interface BeanInstanceProvider {
 	 * 
 	 * @param applicationContextAware
 	 */
-	void initApplicationContextHolder(Class<? extends ApplicationContextAware> applicationContextAware);
+	void initApplicationContextHolder(
+			Class<? extends ApplicationContextAware> applicationContextAware);
 
 	/**
-	 * Search for a class in a set of known instances. If one is found, a pair of
-	 * class/object will be cached in {@link #mockInstanceMap} and true is
-	 * returned, otherwise false.
+	 * If this class is used by applicationContextAware
+	 * {@link BeanFactory#getBean(Class)} needs to instantiate Mocks but no real
+	 * instances. To make this distinction possible, we need this switch.
 	 * 
-	 * If true is returned, you can obtain your instance via
-	 * {@link Map#get(Object)} on {@link #mockInstanceMap}.
-	 * @param <T>
-	 * 
-	 * @param clazz
-	 *            The class you are looking for.
-	 * @return true, if {@link #mockInstanceMap} holds an instance of this
-	 *         class, false otherwise.
+	 * @return true, if the {@link ApplicationContext} in this class is used by
+	 *         an {@link ApplicationContextAware}-Instance.
 	 */
-	public abstract <T> boolean discoverInstanceOf(Class<T> clazz);
+	boolean isUsedByApplicationContextAware();
 
 }

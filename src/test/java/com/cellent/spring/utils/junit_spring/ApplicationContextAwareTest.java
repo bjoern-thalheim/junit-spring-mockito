@@ -3,7 +3,6 @@ package com.cellent.spring.utils.junit_spring;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.context.ApplicationContextAware;
 
 import com.cellent.spring.utils.junit_spring.support.MyApplicationContextHolder;
@@ -16,7 +15,6 @@ import com.cellent.spring.utils.junit_spring.support.MyDelegate;
  * to get an application context and initialize other beans.
  * 
  * @author bjoern
- * 
  */
 public class ApplicationContextAwareTest {
 
@@ -29,8 +27,6 @@ public class ApplicationContextAwareTest {
 		BeanInstanceProvider beanInstanceProvider = new AbstractSpringMockitoTest();
 		beanInstanceProvider
 				.initApplicationContextHolder(MyApplicationContextHolder.class);
-		MyDelegate myDelegate = Mockito.mock(MyDelegate.class);
-		beanInstanceProvider.registerInstance(myDelegate);
 		// somehow we'll end up in a class lookup of the delegate which should
 		// be mocked then.
 		MyBeanUsingAppConAwareInConstructor instance = new MyBeanUsingAppConAwareInConstructor();

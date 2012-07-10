@@ -29,6 +29,7 @@ class MockitoTestBeanFactory extends DefaultListableBeanFactory {
 	 * management.
 	 */
 	private final BeanInstanceProvider beanInstanceProvider;
+	private boolean isUsedByApplicationContextAware;
 
 	/**
 	 * Constructor of this class.
@@ -50,9 +51,7 @@ class MockitoTestBeanFactory extends DefaultListableBeanFactory {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getBean(Class<T> requiredType) throws BeansException {
-		// TODO: use getInstanceOf if this applicationContext is used within
-		// applicationContextAware, otherwise use a real instantiation.
-		if (beanInstanceProvider.discoverInstanceOf(requiredType)) {
+		if (beanInstanceProvider.isUsedByApplicationContextAware()) {
 			return beanInstanceProvider.getInstanceOf(requiredType);
 		}
 		Constructor<?> constructor = getAutowiredOrOnlyConstructorOf(requiredType);

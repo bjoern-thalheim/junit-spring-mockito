@@ -8,6 +8,7 @@ import java.util.Set;
 import org.mockito.Mockito;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.TypeConverter;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,6 +52,13 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 	 * {@link MockitoTestBeanFactory#getBean(Class)}.
 	 */
 	ApplicationContext applicationContext;
+
+	/**
+	 * If this class is used by applicationContextAware
+	 * {@link BeanFactory#getBean(Class)} needs to instantiate Mocks but no real
+	 * instances. To make this distinction possible, we need this switch.
+	 */
+	private boolean usedByApplicationContextAware;
 
 	/**
 	 * Create an object (you might call it context or factory as well) which
@@ -157,6 +165,7 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 		try {
 			applicationContextAware.newInstance().setApplicationContext(
 					this.applicationContext);
+			usedByApplicationContextAware = true;
 		} catch (BeansException e) {
 			throw new RuntimeException(
 					"I should be able to instantiate the applicationContextAware ...",
@@ -174,9 +183,29 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#discoverInstanceOf(java.lang.Class)
+	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#isUsedByApplicationContextAware()
 	 */
-	public <T> boolean discoverInstanceOf(Class<T> clazz) {
+	public boolean isUsedByApplicationContextAware() {
+		return usedByApplicationContextAware;
+	}
+
+
+	/**
+	 * Search for a class in a set of known instances. If one is found, a pair
+	 * of class/object will be cached in {@link #mockInstanceMap} and true is
+	 * returned, otherwise false.
+	 * 
+	 * If true is returned, you can obtain your instance via
+	 * {@link Map#get(Object)} on {@link #mockInstanceMap}.
+	 * 
+	 * @param <T>
+	 * 
+	 * @param clazz
+	 *            The class you are looking for.
+	 * @return true, if {@link #mockInstanceMap} holds an instance of this
+	 *         class, false otherwise.
+	 */
+	private <T> boolean discoverInstanceOf(Class<T> clazz) {
 		Collection<Object> instaces = mockInstanceMap.values();
 		for (Object object : instaces) {
 			if (clazz.isInstance(object)) {
