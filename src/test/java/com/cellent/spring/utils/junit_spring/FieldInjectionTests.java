@@ -12,6 +12,14 @@ import com.cellent.spring.utils.junit_spring.support.MyBeanWithFieldAutowiredBea
 import com.cellent.spring.utils.junit_spring.support.MyDelegate;
 import com.cellent.spring.utils.junit_spring.support.MyInitializingBean;
 
+/**
+ * Base scenario. "Inject" instances into classes like is done in a Spring
+ * container.
+ * 
+ * Basically the Autowiring post processing is tested here.
+ * 
+ * @author bjoern
+ */
 public class FieldInjectionTests {
 
 	/** Class under Test. */
@@ -26,15 +34,19 @@ public class FieldInjectionTests {
 	}
 
 	/**
-	 * Prüfung, dass ein simples Bean ohne Instanzvariablen initialisiert werden
-	 * kann. Test dient der Prüfung der Instanziierung via Spring etc.
+	 * Instantiation of a Bean withour any delegates autowired is verified to
+	 * work in here.
 	 */
 	@Test
-	public void test() {
+	public void testNoInjection() {
 		MyBean bean = abstractSpringMockTest.createBean(MyBean.class);
 		assertTrue(bean instanceof MyBean);
 	}
 
+	/**
+	 * One delegate is field-autowired. Please not that a Mock of the delegate
+	 * does not explicitly need t be defined but is defined as needed.
+	 */
 	@Test
 	public void testWithAutowiredBean() {
 		MyBeanWithFieldAutowiredBean bean = abstractSpringMockTest
@@ -42,6 +54,11 @@ public class FieldInjectionTests {
 		assertTrue(bean.getDelegate() instanceof MyDelegate);
 	}
 
+	/**
+	 * The instance injected into the class under test needs to be exactly the
+	 * same as in {@link BeanInstanceProvider#getInstanceOf(Class)}, because
+	 * this is the mock to work with in the test cases.
+	 */
 	@Test
 	public void testGetMockAfterAutowiring() {
 		MyBeanWithFieldAutowiredBean bean = abstractSpringMockTest
@@ -49,10 +66,14 @@ public class FieldInjectionTests {
 		MyDelegate delegate = bean.getDelegate();
 		MyDelegate mock = abstractSpringMockTest
 				.getInstanceOf(MyDelegate.class);
-		// Muss exakt dieselbe Instanz sein, deshalb Prüfung mit ==
+		// Has to be exactly this instance, therfore comparison via ==
 		assertTrue(delegate == mock);
 	}
 
+	/**
+	 * Same as {@link #testGetMockAfterAutowiring()}, but in reverse order.
+	 * Order shall not matter at all here.
+	 */
 	@Test
 	public void testGetMockFirst() {
 		MyDelegate mock = abstractSpringMockTest
@@ -61,15 +82,14 @@ public class FieldInjectionTests {
 	}
 
 	/**
-	 * Prüfe, dass kein Mock erzeugt wird, wenn im
-	 * {@link AbstractSpringMockTest} schon eine Bean dieses Typs registiert
-	 * wurde.
+	 * Test that no mock is created if one is registered explicitly before
+	 * instantiating the class under test.
 	 */
 	@Test
 	public void testRegisterBean() {
 		MyDelegate registeredBean = mock(MyDelegate.class);
 		abstractSpringMockTest.registerInstance(registeredBean);
-		// Muss exakt dieselbe Instanz sein, deshalb Prüfung mit ==
+		// Has to be exactly this instance, therfore comparison via ==
 		assertTrue(registeredBean == abstractSpringMockTest
 				.getInstanceOf(MyDelegate.class));
 		MyBeanWithFieldAutowiredBean owningBean = abstractSpringMockTest
@@ -78,10 +98,11 @@ public class FieldInjectionTests {
 	}
 
 	/**
-	 * Wenn man eine Klasse mit einem Delegate erzeugt und dieses vorher nicht
-	 * explizit registriert hat, muss das Ergebnis von
-	 * {@link AbstractSpringMockTest#getInstanceOf(Class)} mit der Instanz des
-	 * Delegates im Erzeugten Bean übereinstimmen.
+	 * If a bean with a delegate is instantiated and no instantiation candidate
+	 * for this delegate was registered before, the instance which is injected
+	 * and the instance whcih can be obtained via
+	 * {@link BeanInstanceProvider#getInstanceOf(Class)} need to be exactly the
+	 * same.
 	 */
 	@Test
 	public void testGetCorrectMockInstance() {
@@ -90,8 +111,7 @@ public class FieldInjectionTests {
 		MyDelegate delegate = abstractSpringMockTest
 				.getInstanceOf(MyDelegate.class);
 		assertTrue(delegate == owningBean.getDelegate());
-		// Nochmal ausprobieren, was passiert, wenn zuerst das Delegate und dann
-		// das Bean erzeugt werden
+		// Try again in reverse order. Re-instantiate to do so cleanly.
 		abstractSpringMockTest = new SpringMockitoTest();
 		delegate = abstractSpringMockTest.getInstanceOf(MyDelegate.class);
 		owningBean = abstractSpringMockTest
@@ -100,8 +120,9 @@ public class FieldInjectionTests {
 	}
 
 	/**
-	 * Die Methode {@link InitializingBean#afterPropertiesSet()} soll ausgeführt
-	 * werden können.
+	 * If the bean instantiated implements {@link InitializingBean},
+	 * {@link InitializingBean#afterPropertiesSet()} needs to be called on the
+	 * instance after instantiation.
 	 */
 	@Test
 	public void testAfterPropertiesSet() {

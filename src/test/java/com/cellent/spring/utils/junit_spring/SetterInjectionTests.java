@@ -4,10 +4,18 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cellent.spring.utils.junit_spring.support.MyBeanWithSetterAutowiredBean;
 import com.cellent.spring.utils.junit_spring.support.MyDelegate;
 
+/**
+ * {@link Autowired} is not only possible on fields but also on methods. In this
+ * case, the correct instantiation candidates of the method parameters need to
+ * be found or created and then used to call the method.
+ * 
+ * @author bjoern
+ */
 public class SetterInjectionTests {
 
 	/** Class under Test. */
@@ -22,7 +30,7 @@ public class SetterInjectionTests {
 	}
 
 	/**
-	 * Nachdem Field-Injection geht, hier der Test für die Setter-Injection.
+	 * Test if setter injection works.
 	 */
 	@Test
 	public void testSetterInjection() {

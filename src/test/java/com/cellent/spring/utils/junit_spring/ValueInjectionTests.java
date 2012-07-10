@@ -11,16 +11,16 @@ import com.cellent.spring.utils.junit_spring.support.MyBeanWithMethodParamInject
 import com.cellent.spring.utils.junit_spring.support.MyBeanWithValueFieldAndSetterInjected;
 
 /**
- * Tests für die {@link Value}-Annotation. Siehe hierzu auch:
- * http://static.springsource
+ * Tests for injection via {@link Value}. See also: http://static.springsource
  * .org/spring/docs/3.0.5.RELEASE/reference/expressions.html: 6.4.2
- * Annotation-based configuration.
+ * Annotation-based configuration. Values need to be injected via bean post
+ * processing.
  * 
  * @author bjoern
  */
 public class ValueInjectionTests {
 
-	/** Beliebiger Wert, auf welchen dann geprüft werden kann. */
+	/** Some value which can be injected and checked for afterwards in tests. */
 	private static final String VALUE = "fvztgbuzh!";
 
 	/** Class under Test. */
@@ -33,7 +33,7 @@ public class ValueInjectionTests {
 	}
 
 	/**
-	 * Teste, dass die {@link Value}-Annotation an einem Feld gut funktioniert.
+	 * Test the {@link Value}-Annotation on a field.
 	 */
 	@Test
 	public void testFieldInjection() {
@@ -45,8 +45,7 @@ public class ValueInjectionTests {
 	}
 
 	/**
-	 * Teste, dass die {@link Value}-Annotation an einer Methode gut
-	 * funktioniert.
+	 * Test {@link Value} injection on a (setter) method.
 	 */
 	@Test
 	public void testMethodInjection() {
@@ -58,9 +57,8 @@ public class ValueInjectionTests {
 	}
 
 	/**
-	 * Teste, wie die Injection eines Methodenparameters, welcher mit
-	 * {@link Value} annotiert ist, in einer Methode oder einem Konstruktor,
-	 * welcher mit {@link Autowired} annotiert ist, funktioniert.
+	 * A method parameter may be injected via {@link Value} if the method is
+	 * annotated with {@link Autowired}.
 	 */
 	@Test
 	public void testMethodParamInjection() {
@@ -91,7 +89,8 @@ public class ValueInjectionTests {
 		instanceProvider.setValue("fieldInjectedValue", null);
 		instanceProvider.setValue("setterInjectedValue", null);
 		// the next call should not throw an exception
-		instanceProvider.createBean(MyBeanWithValueFieldAndSetterInjected.class);
+		instanceProvider
+				.createBean(MyBeanWithValueFieldAndSetterInjected.class);
 	}
 
 }
