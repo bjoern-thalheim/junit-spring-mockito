@@ -46,7 +46,7 @@ public interface BeanInstanceProvider {
 	<T> T getInstanceOf(Class<T> clazz);
 
 	/**
-	 * Crea an instance (no mock!) if the desired class. All fields of this
+	 * Create an instance (no mock!) if the desired class. All fields of this
 	 * instance will be subject to Autowire-Processing and filled with the
 	 * instances known in this context (by using {@link #getInstanceOf(Class)}).
 	 * 
