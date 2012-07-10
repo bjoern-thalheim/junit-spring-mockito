@@ -2,6 +2,8 @@ package com.cellent.spring.utils.junit_spring.impl;
 
 import org.easymock.EasyMock;
 
+import com.cellent.spring.utils.junit_spring.impl.backing.AbstractTestApplicationContext;
+
 /**
  * Implementation to provide Easymock Mocks for Classes and Interfaces.
  * 

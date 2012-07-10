@@ -2,6 +2,8 @@ package com.cellent.spring.utils.junit_spring.impl;
 
 import org.mockito.Mockito;
 
+import com.cellent.spring.utils.junit_spring.impl.backing.AbstractTestApplicationContext;
+
 /**
  * Implementation to provide Mockito Mocks for Classes and Interfaces.
  * 
