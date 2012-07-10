@@ -29,7 +29,7 @@ public class ValueInjectionTests {
 	/** Init Class under Test. */
 	@Before
 	public void init() {
-		instanceProvider = new AbstractSpringMockitoTest();
+		instanceProvider = new SpringMockitoTest();
 	}
 
 	/**

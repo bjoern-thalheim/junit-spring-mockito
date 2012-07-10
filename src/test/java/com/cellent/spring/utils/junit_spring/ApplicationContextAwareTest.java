@@ -24,7 +24,7 @@ public class ApplicationContextAwareTest {
 	 */
 	@Test
 	public void testApplicationContextAware() {
-		BeanInstanceProvider beanInstanceProvider = new AbstractSpringMockitoTest();
+		BeanInstanceProvider beanInstanceProvider = new SpringMockitoTest();
 		beanInstanceProvider
 				.initApplicationContextHolder(MyApplicationContextHolder.class);
 		// somehow we'll end up in a class lookup of the delegate which should

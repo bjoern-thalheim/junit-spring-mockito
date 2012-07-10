@@ -1,7 +1,5 @@
 package com.cellent.spring.utils.junit_spring;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

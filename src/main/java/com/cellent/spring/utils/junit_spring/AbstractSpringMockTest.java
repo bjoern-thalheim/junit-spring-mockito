@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.mockito.Mockito;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.TypeConverter;
 import org.springframework.beans.factory.BeanFactory;
@@ -25,7 +24,7 @@ import org.springframework.context.support.GenericApplicationContext;
  * 
  * @author bjoern
  */
-public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
+public abstract class AbstractSpringMockTest implements BeanInstanceProvider {
 
 	/**
 	 * A Map with all {@link Value}s.
@@ -34,7 +33,7 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 
 	/**
 	 * Cache for beans in the context. Will be used by
-	 * {@link MockitoTestBeanFactory#resolveDependency(DependencyDescriptor, String, Set, TypeConverter)}
+	 * {@link SpringMockBeanFactory#resolveDependency(DependencyDescriptor, String, Set, TypeConverter)}
 	 */
 	@SuppressWarnings("rawtypes")
 	private Map<Class, Object> mockInstanceMap;
@@ -42,14 +41,14 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 	/**
 	 * @see AutowiredAnnotationBeanPostProcessor. This will be effectively
 	 *      important to call
-	 *      {@link MockitoTestBeanFactory#resolveDependency(DependencyDescriptor, String, Set, TypeConverter)}
+	 *      {@link SpringMockBeanFactory#resolveDependency(DependencyDescriptor, String, Set, TypeConverter)}
 	 *      .
 	 */
 	private AutowiredAnnotationBeanPostProcessor autowirePostProcessor;
 
 	/**
 	 * To instantiate by Spring and do constructor injection. Will be using
-	 * {@link MockitoTestBeanFactory#getBean(Class)}.
+	 * {@link SpringMockBeanFactory#getBean(Class)}.
 	 */
 	ApplicationContext applicationContext;
 
@@ -67,7 +66,7 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 	 * {@link #createBean(Class)}.
 	 */
 	@SuppressWarnings("rawtypes")
-	public AbstractSpringMockitoTest() {
+	public AbstractSpringMockTest() {
 		// Initialisiere den Object Cache ({@link #mockInstanceMap},
 		// Pseudo-ApplicationContext) und den {@link #autowirePostProcessor}.
 		mockInstanceMap = new HashMap<Class, Object>();
@@ -75,7 +74,7 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 		// Spring Infrastruktur
 		autowirePostProcessor = new AutowiredAnnotationBeanPostProcessor();
 		applicationContext = new GenericApplicationContext(
-				new MockitoTestBeanFactory(this));
+				new SpringMockBeanFactory(this));
 		autowirePostProcessor.setBeanFactory(applicationContext
 				.getAutowireCapableBeanFactory());
 	}
@@ -183,12 +182,13 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#isUsedByApplicationContextAware()
+	 * 
+	 * @see com.cellent.spring.utils.junit_spring.BeanInstanceProvider#
+	 * isUsedByApplicationContextAware()
 	 */
 	public boolean isUsedByApplicationContextAware() {
 		return usedByApplicationContextAware;
 	}
-
 
 	/**
 	 * Search for a class in a set of known instances. If one is found, a pair
@@ -221,10 +221,7 @@ public final class AbstractSpringMockitoTest implements BeanInstanceProvider {
 	 * 
 	 * @param requiredType
 	 *            The desired class.
-	 * @return A {@link Mockito}-Mock of the desired class.
+	 * @return A Mock of the desired class.
 	 */
-	private <T> T createMockInstance(Class<T> requiredType) {
-		return Mockito.mock(requiredType);
-	}
-
+	protected abstract <T> T createMockInstance(Class<T> requiredType);
 }

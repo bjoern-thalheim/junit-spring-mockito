@@ -22,14 +22,13 @@ import org.springframework.core.MethodParameter;
  * 
  * @author bjoern
  */
-class MockitoTestBeanFactory extends DefaultListableBeanFactory {
+class SpringMockBeanFactory extends DefaultListableBeanFactory {
 
 	/**
 	 * The {@link BeanInstanceProvider} which takes care of object creation and
 	 * management.
 	 */
 	private final BeanInstanceProvider beanInstanceProvider;
-	private boolean isUsedByApplicationContextAware;
 
 	/**
 	 * Constructor of this class.
@@ -38,7 +37,7 @@ class MockitoTestBeanFactory extends DefaultListableBeanFactory {
 	 *            The {@link BeanInstanceProvider} which takes care of object
 	 *            creation and management.
 	 */
-	MockitoTestBeanFactory(BeanInstanceProvider abstractSpringMockTest) {
+	SpringMockBeanFactory(BeanInstanceProvider abstractSpringMockTest) {
 		this.beanInstanceProvider = abstractSpringMockTest;
 	}
 
