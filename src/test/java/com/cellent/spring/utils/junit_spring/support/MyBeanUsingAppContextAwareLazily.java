@@ -6,7 +6,6 @@ import org.springframework.context.ApplicationContextAware;
  * Test class for lazy init of a bean via {@link ApplicationContextAware}.
  * 
  * @author bjoern
- * 
  */
 public class MyBeanUsingAppContextAwareLazily {
 
