@@ -73,6 +73,6 @@ public interface TestApplicationContext extends BeanInstanceProvider {
 	 * @param instance
 	 *            The instance to register in the application Context.
 	 */
-	void registerInstance(String name, MyDelegate instance);
+	void registerInstance(String name, Object instance);
 
 }

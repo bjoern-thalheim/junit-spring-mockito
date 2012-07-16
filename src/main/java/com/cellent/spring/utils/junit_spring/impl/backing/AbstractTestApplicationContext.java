@@ -230,7 +230,7 @@ public abstract class AbstractTestApplicationContext implements TestApplicationC
 	 * com.cellent.spring.utils.junit_spring.support.MyDelegate)
 	 */
 	@Override
-	public void registerInstance(String name, MyDelegate instance) {
+	public void registerInstance(String name, Object instance) {
 		this.beanByNameMap.put(name, instance);
 	}
 
