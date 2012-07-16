@@ -5,8 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * Bean implementing {@link ApplicationContextAware} to provide Access to Spring
- * Beans for non-Spring-Beans.
+ * Bean implementing {@link ApplicationContextAware} to provide Access to Spring Beans for non-Spring-Beans.
  * 
  * @author bjoern
  */
@@ -14,13 +13,16 @@ public class MyApplicationContextHolder implements ApplicationContextAware {
 
 	private static ApplicationContext ctx;
 
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		ctx = applicationContext;
 	}
 
 	public static MyDelegate getMyDelegate() {
 		return ctx.getBean(MyDelegate.class);
+	}
+
+	public static ApplicationContext getApplicationContext() {
+		return ctx;
 	}
 
 }

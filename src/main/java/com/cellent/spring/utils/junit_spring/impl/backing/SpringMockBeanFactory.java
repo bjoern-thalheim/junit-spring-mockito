@@ -282,4 +282,13 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 		}
 		return clazz;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.springframework.beans.factory.support.AbstractBeanFactory#getBean(java.lang.String)
+	 */
+	@Override
+	public Object getBean(String name) throws BeansException {
+		return this.testApplicationContext.getInstanceFor(name);
+	}
 }

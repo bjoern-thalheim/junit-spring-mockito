@@ -13,6 +13,7 @@ public final class MockitoApplicationContext extends AbstractTestApplicationCont
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.cellent.spring.utils.junit_spring.impl.AbstractTestApplicationContext#createMockInstance(java.lang.Class)
 	 */
 	@Override
