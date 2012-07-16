@@ -232,6 +232,7 @@ public abstract class AbstractTestApplicationContext implements TestApplicationC
 	@Override
 	public void registerInstance(String name, Object instance) {
 		this.beanByNameMap.put(name, instance);
+		this.mockInstanceMap.put(instance.getClass(), instance);
 	}
 
 	/*
