@@ -19,11 +19,17 @@ Imagine you have a test case which tests a method in MyBean which actually calls
 	// ... Mockito.verify(mockedDelegate).M
 Here you have a problem: since we use field injection, we do not have a setter for MyDelegate in MyBean.
 
+But, for performance reasons, I wanted to do Spring Injection without using a real spring application container and without doing XML.
+So I used Spring mechanisms outside of a Spring container to test classes which use Spring Annotations.
+
 Other Approaches
 ----------------
 
 As well as I know, there exists a Spring-JUnit-Testrunner again, which allows you to write down an application context in xml and which actually uses Spring to do injection of these mocks into the classes under test.
-I see two problems with that: First, I don't like to use XML for that purpose. Second, building up a real application context to run a test is in my experience slow. Third, the application context is valid for all tests and not only for one of them.
+I see two problems with that: 
+- First, I don't like to use XML for that purpose. 
+- Second, building up a real application context to run a test is in my experience slow. 
+But yes, it is possible to use SpringJUnit4ClassRunner, and  a framework like springockito would help you to work with that.
 It is also possible I have simply not found what I was looking for. I guess then this piece of software was a nice exercise.
 
 Supported functionality
@@ -40,3 +46,50 @@ Spring comes in a variety of flavors. This projects enables you to test classes 
 
 General Approach
 ----------------
+
+You can use
+	org.springframework.context.support.GenericApplicationContext.GenericApplicationContext(DefaultListableBeanFactory)
+with an own implementation extending 
+	org.springframework.beans.factory.support.DefaultListableBeanFactory
+and finally set up an AutowiredBeanPostProcessor by using
+	org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.setBeanFactory(BeanFactory)
+and you're ready to go.
+
+Field injection: If you have just fields annotated with @Autowired, you need to use
+	autowirePostProcessor.processInjection(result);
+For this to work, I simply had to override
+	org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DependencyDescriptor, String, Set<String>, TypeConverter)
+Setter injection is done by that, too.
+@Value is also handled in the resolveDependency method.
+
+Constructor injection: In order to have constructor injection work, you need to override 
+	com.cellent.spring.utils.junit_spring.impl.backing.SpringMockBeanFactory.getBean(Class<T>)
+appropriately and then use
+	org.springframework.beans.factory.BeanFactory.getBean(Class<T>)
+to instantiate your class. All Beans used in a constructor annotated with @Autowired will be again looked up by
+	org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DependencyDescriptor, String, Set<String>, TypeConverter)
+or, better say, the method with which I have overridden this in
+	com.cellent.spring.utils.junit_spring.impl.backing.SpringMockBeanFactory.resolveDependency(DependencyDescriptor, String, Set<String>, TypeConverter)
+	
+Until here, everything is clearly differentiated. In our testing scenario, resolveDependencies will return delegates of the class under test which is handled by getBean.
+
+ApplicationContextAware: Usually 
+	org.springframework.beans.factory.BeanFactory.getBean(Class<T>)
+will be used to look up an instance of a class when using
+	org.springframework.context.ApplicationContextAware
+We can simply put our own application context into the ApplicationContextAware by overriding
+	org.springframework.context.ApplicationContextAware.setApplicationContext(ApplicationContext)
+Now, the distinction of using getBean for real instances and the class under test and using resolveDependencies for Mocks and delegates is not given any more.
+Thats why our implementation actually knows if the application context is used in an ApplicationContextAware.
+
+Usage
+-----
+
+All Tests written down in 
+	com.cellent.spring.utils.junit_spring illustrate the usage of the framework.
+Basically, depending on your preferred 
+
+
+Also, we have here
+- lazy initialization of Mocks.
+You basically never need to initialize Mocks yourself, you 
