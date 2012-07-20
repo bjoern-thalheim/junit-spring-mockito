@@ -58,7 +58,7 @@ public class FieldInjectionTest {
 
 	/**
 	 * The instance injected into the class under test needs to be exactly the
-	 * same as in {@link TestApplicationContext#getInstanceOf(Class)}, because
+	 * same as in {@link TestApplicationContext#getInstance(Class)}, because
 	 * this is the mock to work with in the test cases.
 	 */
 	@Test
@@ -67,7 +67,7 @@ public class FieldInjectionTest {
 				.createInstance(MyBeanWithFieldAutowiredBean.class);
 		MyDelegate delegate = bean.getDelegate();
 		MyDelegate mock = abstractSpringMockTest
-				.getInstanceOf(MyDelegate.class);
+				.getInstance(MyDelegate.class);
 		// Has to be exactly this instance, therfore comparison via ==
 		assertTrue(delegate == mock);
 	}
@@ -79,7 +79,7 @@ public class FieldInjectionTest {
 	@Test
 	public void testGetMockFirst() {
 		MyDelegate mock = abstractSpringMockTest
-				.getInstanceOf(MyDelegate.class);
+				.getInstance(MyDelegate.class);
 		assertTrue(mock instanceof MyDelegate);
 	}
 
@@ -93,7 +93,7 @@ public class FieldInjectionTest {
 		abstractSpringMockTest.registerInstance(registeredBean);
 		// Has to be exactly this instance, therfore comparison via ==
 		assertTrue(registeredBean == abstractSpringMockTest
-				.getInstanceOf(MyDelegate.class));
+				.getInstance(MyDelegate.class));
 		MyBeanWithFieldAutowiredBean owningBean = abstractSpringMockTest
 				.createInstance(MyBeanWithFieldAutowiredBean.class);
 		assertTrue(registeredBean == owningBean.getDelegate());
@@ -103,7 +103,7 @@ public class FieldInjectionTest {
 	 * If a bean with a delegate is instantiated and no instantiation candidate
 	 * for this delegate was registered before, the instance which is injected
 	 * and the instance whcih can be obtained via
-	 * {@link TestApplicationContext#getInstanceOf(Class)} need to be exactly the
+	 * {@link TestApplicationContext#getInstance(Class)} need to be exactly the
 	 * same.
 	 */
 	@Test
@@ -111,11 +111,11 @@ public class FieldInjectionTest {
 		MyBeanWithFieldAutowiredBean owningBean = abstractSpringMockTest
 				.createInstance(MyBeanWithFieldAutowiredBean.class);
 		MyDelegate delegate = abstractSpringMockTest
-				.getInstanceOf(MyDelegate.class);
+				.getInstance(MyDelegate.class);
 		assertTrue(delegate == owningBean.getDelegate());
 		// Try again in reverse order. Re-instantiate to do so cleanly.
 		abstractSpringMockTest = new MockitoApplicationContext();
-		delegate = abstractSpringMockTest.getInstanceOf(MyDelegate.class);
+		delegate = abstractSpringMockTest.getInstance(MyDelegate.class);
 		owningBean = abstractSpringMockTest
 				.createInstance(MyBeanWithFieldAutowiredBean.class);
 		assertTrue(delegate == owningBean.getDelegate());
@@ -130,7 +130,7 @@ public class FieldInjectionTest {
 	public void testAfterPropertiesSet() {
 		abstractSpringMockTest.createInstance(MyInitializingBean.class);
 		MyDelegate delegate = abstractSpringMockTest
-				.getInstanceOf(MyDelegate.class);
+				.getInstance(MyDelegate.class);
 		verify(delegate).executeVoidCall();
 	}
 }

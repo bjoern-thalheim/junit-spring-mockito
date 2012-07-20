@@ -41,7 +41,7 @@ public class ConstructorInjectionTest {
 				.createInstance(MyBeanWithConstructorAutowiredBean.class);
 		assertTrue(instance.getDelegate() instanceof MyDelegate);
 		MyDelegate delegate = abstractSpringMockTest
-				.getInstanceOf(MyDelegate.class);
+				.getInstance(MyDelegate.class);
 		assertTrue(delegate == instance.getDelegate());
 
 	}
@@ -55,7 +55,7 @@ public class ConstructorInjectionTest {
 		MyBeanWithConstructorAutowiredBeanAndOtherConstructor instance = abstractSpringMockTest
 				.createInstance(MyBeanWithConstructorAutowiredBeanAndOtherConstructor.class);
 		MyDelegate delegate = abstractSpringMockTest
-				.getInstanceOf(MyDelegate.class);
+				.getInstance(MyDelegate.class);
 		assertTrue(delegate == instance.getDelegate());
 	}
 

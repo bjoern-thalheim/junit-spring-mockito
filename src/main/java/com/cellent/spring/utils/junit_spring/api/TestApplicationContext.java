@@ -13,7 +13,7 @@ import com.cellent.spring.utils.junit_spring.support.MyDelegate;
  * For Object Autowiring via {@link Autowired} you may do the following: {@link #registerInstance(Object)} to register an
  * object which you want to autowire (so you are in full control over the instantiation of ths object),
  * {@link #createInstance(Class)} to actually create the class under test. To obtain your registered object, you may use
- * {@link #getInstanceOf(Class)} in your test class.
+ * {@link #getInstance(Class)} in your test class.
  * 
  * If you want a mocked intance to be autowired, simply use {@link #createInstance(Class)} to create the class under test.
  * All Beans which are autowired into the class will be created with your favorite mocking framework.
@@ -28,7 +28,7 @@ public interface TestApplicationContext extends BeanInstanceProvider {
 
 	/**
 	 * Create an instance (no mock!) if the desired class. All fields of this instance will be subject to
-	 * Autowire-Processing and filled with the instances known in this context (by using {@link #getInstanceOf(Class)}).
+	 * Autowire-Processing and filled with the instances known in this context (by using {@link #getInstance(Class)}).
 	 * 
 	 * @param clazz
 	 *            The desired class. May not be an interface.
@@ -39,7 +39,7 @@ public interface TestApplicationContext extends BeanInstanceProvider {
 	<T> T createInstance(Class<T> clazz);
 
 	/**
-	 * Register the object given n the context. Whenever after that {@link #getInstanceOf(Class)} is called which matches
+	 * Register the object given n the context. Whenever after that {@link #getInstance(Class)} is called which matches
 	 * the class of the object given, that object will be returned.
 	 * 
 	 * @param beanInstance

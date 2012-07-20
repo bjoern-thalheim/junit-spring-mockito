@@ -19,7 +19,7 @@ import com.cellent.spring.utils.junit_spring.api.BeanInstanceProvider;
 import com.cellent.spring.utils.junit_spring.api.TestApplicationContext;
 
 /**
- * Bean factory, which uses {@link TestApplicationContext#getInstanceOf(Class)}
+ * Bean factory, which uses {@link TestApplicationContext#getInstance(Class)}
  * and {@link TestApplicationContext#getValue(String)} to to autowiring without
  * a spring context.
  * 
@@ -54,7 +54,7 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 	public <T> T getBean(Class<T> clazz) throws BeansException {
 		// create mock or find registered instance (delegate of real class).
 		if (testApplicationContext.isUsedByApplicationContextAware()) {
-			return testApplicationContext.getInstanceOf(clazz);
+			return testApplicationContext.getInstance(clazz);
 		}
 		// no delegate, real class using delegates.
 		return createRealInstance(clazz);
@@ -127,7 +127,7 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 				result[i] = injectedValue;
 			} else {
 				result[i] = this.testApplicationContext
-						.getInstanceOf(clazzes[i]);
+						.getInstance(clazzes[i]);
 			}
 		}
 		return result;
@@ -242,7 +242,7 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 			return lookUpValue(valueAnnotation.value(), true);
 		}
 		Class<?> clazz = determineDesiredClassFromFieldOrMethod(descriptor);
-		return this.testApplicationContext.getInstanceOf(clazz);
+		return this.testApplicationContext.getInstance(clazz);
 	}
 
 	/**
@@ -289,6 +289,6 @@ class SpringMockBeanFactory extends DefaultListableBeanFactory {
 	 */
 	@Override
 	public Object getBean(String name) throws BeansException {
-		return this.testApplicationContext.getInstanceFor(name);
+		return this.testApplicationContext.getInstance(name);
 	}
 }

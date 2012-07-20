@@ -78,6 +78,6 @@ public class ApplicationContextAwareTest {
 		testApplicationContext.initApplicationContextHolder(MyApplicationContextHolder.class);
 		MyBeanGettingDelegateFromApplicationContextAwareByName bean = new MyBeanGettingDelegateFromApplicationContextAwareByName();
 		assertEquals(instance, bean.getDelegateInstance());
-		assertEquals(instance, testApplicationContext.getInstanceOf(MyDelegate.class));
+		assertEquals(instance, testApplicationContext.getInstance(MyDelegate.class));
 	}
 }

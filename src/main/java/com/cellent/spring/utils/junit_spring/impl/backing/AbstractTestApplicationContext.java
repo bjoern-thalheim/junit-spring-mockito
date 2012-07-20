@@ -18,7 +18,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.GenericApplicationContext;
 
 import com.cellent.spring.utils.junit_spring.api.TestApplicationContext;
-import com.cellent.spring.utils.junit_spring.support.MyDelegate;
 
 /**
  * Class which contains a kind of application context, to make autowiring work in tests without having to build up a real
@@ -141,7 +140,7 @@ public abstract class AbstractTestApplicationContext implements TestApplicationC
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getInstanceOf(Class<T> clazz) {
+	public <T> T getInstance(Class<T> clazz) {
 		if (mockInstanceMap.containsKey(clazz) || discoverInstanceOf(clazz))
 			return (T) mockInstanceMap.get(clazz);
 		else {
@@ -237,10 +236,11 @@ public abstract class AbstractTestApplicationContext implements TestApplicationC
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.cellent.spring.utils.junit_spring.api.BeanInstanceProvider#getInstanceFor(java.lang.String)
 	 */
 	@Override
-	public Object getInstanceFor(String name) throws NoSuchBeanDefinitionException {
+	public Object getInstance(String name) throws NoSuchBeanDefinitionException {
 		Object result = this.beanByNameMap.get(name);
 		if (result != null) {
 			return result;

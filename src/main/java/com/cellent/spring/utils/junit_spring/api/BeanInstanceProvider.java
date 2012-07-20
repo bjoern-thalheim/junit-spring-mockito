@@ -21,7 +21,7 @@ public interface BeanInstanceProvider {
 	 *            The desired class.
 	 * @return An instance of the desired class, either a newly created mock or the instance already known to the context.
 	 */
-	<T> T getInstanceOf(Class<T> clazz);
+	<T> T getInstance(Class<T> clazz);
 
 	/**
 	 * Provide the object which was registered under the given {@link Value} -Key. If none os known, null will be returned.
@@ -51,6 +51,6 @@ public interface BeanInstanceProvider {
 	 * @throws NoSuchBeanDefinitionException
 	 *             If no Bean with that name was found.
 	 */
-	Object getInstanceFor(String name) throws NoSuchBeanDefinitionException;
+	Object getInstance(String name) throws NoSuchBeanDefinitionException;
 
 }
