@@ -1,4 +1,40 @@
-This project was implemented with the goal of easing the use of Mockito Mocks in Spring Beans.
+This project was implemented with the goal of easing the use of Mockito or EasyMock Mocks in Spring Beans.
+
+Usage
+-----
+
+All Tests written down in 
+	com.cellent.spring.utils.junit_spring illustrate the usage of the framework.
+	
+Basically, depending on your preferred Mocking Framework, you create an instance of MockitoApplicationContext or EasyMockApplicationContext
+	TestApplicationContext testApplicationContext = new MockitoApplicationContext();
+
+To create your class under Test, simply use
+	testApplicationContext.createInstance(Class<MyInitializingBean>)
+Autowiring, and, if possible, afterPropertiesSet will be done by the framework.
+
+To retrieve a specific mock instance, you may use
+	testApplicationContext.getInstance(Class<T>)
+and you'll get out the mock filled in a field of the given type in your class under test.
+This way you can retrieve any mocks on which you want to set expectations or do verifications.
+
+To register own instances in the "application context", just use
+	testApplicationContext.registerInstance(Object), or
+	testApplicationContext.registerInstance(String, Object)
+depending on whether you'd like to register your Bean by a specific name or not.
+If you have anything you have annotated with @Value, you can use
+	testApplicationContext.setValue(String, Object)
+to set this value.	 
+If you simply don't care about a specific dependency, or you want it to be instantiated as a simple Mock, you need not to do anything.
+When your Class under Test is instantiated, all fields annotated with @Autowired are automatically filled with a mock instance.
+The latter means that you need to instantiate mocks yourself very often.
+
+If your class under Test uses a Bean implementing ApplicationContextAware to get delegates, please use
+	testApplicationContext.initApplicationContextHolder(Class<? extends ApplicationContextAware>)
+It's best to do that after all other setup, because after that
+	testApplicationContext.createInstance(Class<T>)
+will return Mocks and no real instances any more. So be careful!
+
 
 Initial Idea
 ------------
@@ -81,15 +117,3 @@ We can simply put our own application context into the ApplicationContextAware b
 	org.springframework.context.ApplicationContextAware.setApplicationContext(ApplicationContext)
 Now, the distinction of using getBean for real instances and the class under test and using resolveDependencies for Mocks and delegates is not given any more.
 Thats why our implementation actually knows if the application context is used in an ApplicationContextAware.
-
-Usage
------
-
-All Tests written down in 
-	com.cellent.spring.utils.junit_spring illustrate the usage of the framework.
-Basically, depending on your preferred 
-
-
-Also, we have here
-- lazy initialization of Mocks.
-You basically never need to initialize Mocks yourself, you 
