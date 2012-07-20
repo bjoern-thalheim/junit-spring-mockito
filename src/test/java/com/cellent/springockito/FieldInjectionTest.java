@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
+import com.cellent.spring.utils.junit_spring.support.MyBean;
 import com.cellent.spring.utils.junit_spring.support.MyBeanWithFieldAutowiredBean;
 import com.cellent.spring.utils.junit_spring.support.MyDelegate;
 
@@ -24,7 +25,7 @@ import com.cellent.spring.utils.junit_spring.support.MyDelegate;
  * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "file:src/test/java/com/cellent/springockito/context.xml")
+@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "file:src/test/resources/context.xml")
 // exclude Transactional Context Listener. Seen on
 // http://forum.springsource.org/showthread.php?51622-ContextConfiguration-required-Transactoins
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class })
@@ -35,12 +36,28 @@ public class FieldInjectionTest {
 	 */
 	@Autowired
 	private MyBeanWithFieldAutowiredBean myBeanWithFieldAutowiredBean;
+	
+	/**
+	 * Should be a real instance.
+	 */
+	@Autowired
+	private MyBean bean;
 
 	/**
 	 * Should be a Mockito Mock.
 	 */
 	@Autowired
 	private MyDelegate delegateMock;
+
+	/**
+	 * Instantiation of a Bean withour any delegates autowired is verified to
+	 * work in here.
+	 */
+	@Test
+	public void testNoInjection() {
+		assertTrue(bean instanceof MyBean);
+	}
+
 
 	/**
 	 * Test Field Injection.
