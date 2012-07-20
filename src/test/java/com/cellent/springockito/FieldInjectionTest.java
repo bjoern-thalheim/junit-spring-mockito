@@ -2,7 +2,6 @@ package com.cellent.springockito;
 
 import static org.junit.Assert.*;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
@@ -36,7 +35,7 @@ public class FieldInjectionTest {
 	 */
 	@Autowired
 	private MyBeanWithFieldAutowiredBean myBeanWithFieldAutowiredBean;
-	
+
 	/**
 	 * Should be a real instance.
 	 */
@@ -50,14 +49,12 @@ public class FieldInjectionTest {
 	private MyDelegate delegateMock;
 
 	/**
-	 * Instantiation of a Bean withour any delegates autowired is verified to
-	 * work in here.
+	 * Instantiation of a Bean withour any delegates autowired is verified to work in here.
 	 */
 	@Test
 	public void testNoInjection() {
 		assertTrue(bean instanceof MyBean);
 	}
-
 
 	/**
 	 * Test Field Injection.
