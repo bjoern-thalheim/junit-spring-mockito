@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- I downloaded the mockito.xsd from https://bitbucket.org/kubek2k/springockito/raw/tip/springockito/src/main/resources/spring/mockito.xsd, -->
 <!-- because otherwise this stuff would not work when I am offline. -->
+<!-- The download of http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+	was not really necessary, but i did it to be consistent. -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mockito="http://www.mockito.org/spring/mockito"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	xsi:schemaLocation="http://www.springframework.org/schema/beans file:src/test/resources/spring-beans-3.0.xsd
     	http://www.mockito.org/spring/mockito file:src/test/resources/mockito.xsd">
 
 	<mockito:mock id="myDelegate"
