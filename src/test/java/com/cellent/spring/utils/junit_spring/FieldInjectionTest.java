@@ -68,7 +68,7 @@ public class FieldInjectionTest {
 		MyDelegate delegate = bean.getDelegate();
 		MyDelegate mock = abstractSpringMockTest
 				.getInstance(MyDelegate.class);
-		// Has to be exactly this instance, therfore comparison via ==
+		// Has to be exactly this instance, therefore comparison via ==
 		assertTrue(delegate == mock);
 	}
 
