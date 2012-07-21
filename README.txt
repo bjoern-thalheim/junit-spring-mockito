@@ -35,6 +35,17 @@ It's best to do that after all other setup, because after that
 	testApplicationContext.createInstance(Class<T>)
 will return Mocks and no real instances any more. So be careful!
 
+Supported functionality
+-----------------------
+
+Spring comes in a variety of flavors. This project enables you to test classes which ...
+- use field injection via @Autowired as a field annotation
+- use a constructor annotated with @Autowired
+- use @Value as a parameter annotation on a parameter of a constructor annotated with @Autowired.
+- use setter injection via @Autowired as a method annotation
+- implement org.springframework.beans.factory.InitializingBean with #afterPropertiesSet
+- use an instance of ApplicationContextHolder which finally uses org.springframework.beans.factory.BeanFactory.getBean(String) to find a bean.
+- use an instance of ApplicationContextHolder which finally uses org.springframework.beans.factory.BeanFactory.getBean(Class<MyDelegate>) to find a bean.
 
 Initial Idea
 ------------
@@ -61,24 +72,14 @@ So I used Spring mechanisms outside of a Spring container to test classes which 
 Other Approaches
 ----------------
 
-As well as I know, there exists a Spring-JUnit-Testrunner again, which allows you to write down an application context in xml and which actually uses Spring to do injection of these mocks into the classes under test.
-I see two problems with that: 
+There exists a Spring-JUnit-Testrunner, which allows you to write down an application context in xml and which actually uses Spring to do injection of these mocks into the classes under test.
+I see several problems with that: 
 - First, I don't like to use XML for that purpose. 
-- Second, building up a real application context to run a test is in my experience slow. 
+- Second, building up a real application context to run a test is in my experience slow.
+(I have written some of my testcases with springockito as well and the result is: Springockito .6sec for 5 testcases, my own implementation .35sec for 19 testcases) 
+- Third, manipulating the beans in your "application context" is easier with the code written down in here.
 But yes, it is possible to use SpringJUnit4ClassRunner, and  a framework like springockito would help you to work with that.
 It is also possible I have simply not found what I was looking for. I guess then this piece of software was a nice exercise.
-
-Supported functionality
------------------------
-
-Spring comes in a variety of flavors. This projects enables you to test classes which ...
-- use field injection via @Autowired as a field annotation
-- use a constructor annotated with @Autowired
-- use @Value as a parameter annotation on a parameter of a constructor annotated with @Autowired.
-- use setter injection via @Autowired as a method annotation
-- implement org.springframework.beans.factory.InitializingBean with #afterPropertiesSet
-- use an instance of ApplicationContextHolder which finally uses org.springframework.beans.factory.BeanFactory.getBean(String) to find a bean.
-- use an instance of ApplicationContextHolder which finally uses org.springframework.beans.factory.BeanFactory.getBean(Class<MyDelegate>) to find a bean.
 
 General Approach
 ----------------
