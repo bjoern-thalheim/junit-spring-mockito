@@ -78,6 +78,7 @@ I see several problems with that:
 - Second, building up a real application context to run a test is in my experience slow.
 (I have written some of my testcases with springockito as well and the result is: Springockito .6sec for 5 testcases, my own implementation .35sec for 19 testcases) 
 - Third, manipulating the beans in your "application context" is easier with the code written down in here.
+- Fourth, as soon as you'd like to use an existing production scope application context, you'll be in big trouble if that context uses placeholders which shall be filled in your build (e.g. with maven).
 But yes, it is possible to use SpringJUnit4ClassRunner, and  a framework like springockito would help you to work with that.
 It is also possible I have simply not found what I was looking for. I guess then this piece of software was a nice exercise.
 
