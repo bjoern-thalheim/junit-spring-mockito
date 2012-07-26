@@ -8,6 +8,13 @@ import org.mockito.Mockito;
 
 import com.cellent.spring.utils.junit_spring.support.ToItselfDelegatingBean;
 
+/**
+ * Demonstration Test to show the spy-Functionality of Mockito - it is really well documented in its Javadoc, so doing this
+ * is really as easy as knowing the keyword "spy".
+ * 
+ * @author bjoern
+ * 
+ */
 public class MockitoSpyDemonstrationTest {
 
 	/**
@@ -26,6 +33,9 @@ public class MockitoSpyDemonstrationTest {
 
 	/**
 	 * Test that the delegating Method is really overwritten by a Mockito Spy.
+	 * 
+	 * The Blocks "setup", "when" and "then" are meant in the semantics of the Groovy testing framework spock. I think
+	 * keeping this structure makes tests better readable and understandable.
 	 */
 	@Test
 	public void test() {
