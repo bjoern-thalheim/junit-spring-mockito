@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContextAware;
 
-import com.cellent.spring.utils.junit_spring.support.MyDelegate;
-
 /**
  * Interface for a class providing instantiation methods for Spring beans in test scope. The problem solved by this is that
  * you need not create setters on autowired beans in your class under test but rather have those instances be injected.
@@ -39,8 +37,8 @@ public interface TestApplicationContext extends BeanInstanceProvider {
 	<T> T createInstance(Class<T> clazz);
 
 	/**
-	 * Register the object given n the context. Whenever after that {@link #getInstance(Class)} is called which matches
-	 * the class of the object given, that object will be returned.
+	 * Register the object given n the context. Whenever after that {@link #getInstance(Class)} is called which matches the
+	 * class of the object given, that object will be returned.
 	 * 
 	 * @param beanInstance
 	 *            An instance of a specific class.
