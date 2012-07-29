@@ -56,5 +56,10 @@
 			<artifactId>springockito-annotations</artifactId>
 			<version>1.0.2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.spockframework</groupId>
+			<artifactId>spock-core</artifactId>
+			<version>0.6-groovy-1.8</version>
+		</dependency>
 	</dependencies>
 </project>
