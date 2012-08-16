@@ -73,4 +73,13 @@ public interface TestApplicationContext extends BeanInstanceProvider {
 	 */
 	void registerInstance(String name, Object instance);
 
+	/**
+	 * After instantiating a bean, you may pass it into this method, so that field and setter autowiring as well as calling
+	 * afterPropertiesSet is done.
+	 * 
+	 * @param instance
+	 *            The instance, which has some autowired fields to be filled.
+	 */
+	<T> void postProcessBean(T instance);
+
 }
