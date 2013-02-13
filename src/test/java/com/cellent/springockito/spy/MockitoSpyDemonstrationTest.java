@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.cellent.spring.utils.junit_spring.api.TestApplicationContext;
 import com.cellent.spring.utils.junit_spring.impl.MockitoApplicationContext;
 import com.cellent.spring.utils.junit_spring.support.ToItselfDelegatingBean;
 
@@ -65,7 +66,17 @@ public class MockitoSpyDemonstrationTest {
 	 */
 	@Test
 	public void testCreateSpy() {
+		// Check if this instance really is a spy
 		assertTrue(toItselfDelegatingBean instanceof ToItselfDelegatingBean);
 		assertFalse(toItselfDelegatingBean.getClass().equals(ToItselfDelegatingBean.class));
+		// Preconditions
+		assertNull(toItselfDelegatingBean.getDelegate());
+		assertFalse(toItselfDelegatingBean.isAfterPropertiesSetExecuted());
+		// Do Autowiring, but no afterPropertiesSet.
+		TestApplicationContext ctx = new MockitoApplicationContext();
+		ctx.processInjection(toItselfDelegatingBean);
+		// Postconditions.
+		assertNotNull(toItselfDelegatingBean.getDelegate());
+		assertFalse(toItselfDelegatingBean.isAfterPropertiesSetExecuted());
 	}
 }

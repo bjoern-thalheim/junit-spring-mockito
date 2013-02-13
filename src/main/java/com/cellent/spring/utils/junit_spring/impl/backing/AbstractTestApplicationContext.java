@@ -99,8 +99,18 @@ public abstract class AbstractTestApplicationContext implements TestApplicationC
 	 */
 	@Override
 	public <T> void postProcessBean(T instance) {
-		autowirePostProcessor.processInjection(instance);
+		processInjection(instance);
 		executeAfterPropertiesSetIfNecessary(instance);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.cellent.spring.utils.junit_spring.api.TestApplicationContext#postProcessBean(java.lang.Object)
+	 */
+	@Override
+	public <T> void processInjection(T instance) {
+		autowirePostProcessor.processInjection(instance);
 	}
 
 	/**

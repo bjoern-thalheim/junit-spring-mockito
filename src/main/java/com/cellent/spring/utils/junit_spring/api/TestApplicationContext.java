@@ -78,8 +78,19 @@ public interface TestApplicationContext extends BeanInstanceProvider {
 	 * afterPropertiesSet is done.
 	 * 
 	 * @param instance
-	 *            The instance, which has some autowired fields to be filled.
+	 *            The instance, which has some autowired fields to be filled and which may have an afterPropertiesSet
+	 *            Method.
 	 */
 	<T> void postProcessBean(T instance);
+
+	/**
+	 * After instantiating a Bean, you might explicitly want only autowiring to be done, but no afterPropertiesSet. That's
+	 * what this method is there for.
+	 * 
+	 * @param instance
+	 *            The instance, which has some autowired fields to be filled and which may have an afterPropertiesSet
+	 *            Method, which we explicitly do not want to be executed.
+	 */
+	<T> void processInjection(T instance);
 
 }
