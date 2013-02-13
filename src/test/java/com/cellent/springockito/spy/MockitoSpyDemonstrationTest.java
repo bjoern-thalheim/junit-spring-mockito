@@ -1,12 +1,12 @@
 package com.cellent.springockito.spy;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.cellent.spring.utils.junit_spring.impl.MockitoApplicationContext;
 import com.cellent.spring.utils.junit_spring.support.ToItselfDelegatingBean;
 
 /**
@@ -39,7 +39,6 @@ public class MockitoSpyDemonstrationTest {
 	 * keeping this structure makes tests better readable and understandable.
 	 */
 	@Test
-	@Ignore("This worked the last time I tried it, now it doesn't any more.")
 	public void test() {
 		String expectedString;
 		{ // setup
@@ -56,7 +55,17 @@ public class MockitoSpyDemonstrationTest {
 		{ // then
 			assertEquals(expectedString, result);
 		}
-
 	}
 
+	/**
+	 * There already exists a Method {@link MockitoApplicationContext#postProcessBean(Object)}. Problem is, that binds
+	 * Autowiring and afterPropertiesSet together. In another project, afterPropertiesSet did a lot of things. I wanted to
+	 * test only parts of these and I wanted to use a Mockito spy as well es mocked delegates in that part (which was
+	 * itself a method). So I had to admit that I need to be more fine-grained in here.
+	 */
+	@Test
+	public void testCreateSpy() {
+		assertTrue(toItselfDelegatingBean instanceof ToItselfDelegatingBean);
+		assertFalse(toItselfDelegatingBean.getClass().equals(ToItselfDelegatingBean.class));
+	}
 }

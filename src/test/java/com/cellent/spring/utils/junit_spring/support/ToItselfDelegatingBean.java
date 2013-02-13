@@ -13,7 +13,7 @@ public class ToItselfDelegatingBean {
 	 * 
 	 * @return A String.
 	 */
-	public final String myDelegatingMethod() {
+	public String myDelegatingMethod() {
 		throw new UnsupportedOperationException("Please override this Method with a Mockito Spy");
 	}
 
