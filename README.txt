@@ -27,7 +27,7 @@ If you have anything you have annotated with @Value, you can use
 to set this value.	 
 If you simply don't care about a specific dependency, or you want it to be instantiated as a simple Mock, you need not to do anything.
 When your Class under Test is instantiated, all fields annotated with @Autowired are automatically filled with a mock instance.
-The latter means that you need to instantiate mocks yourself very often.
+The latter means that you need to instantiate mocks yourself very rarely. You just leave it to the framework.
 
 If your class under Test uses a Bean implementing ApplicationContextAware to get delegates, please use
 	testApplicationContext.initApplicationContextHolder(Class<? extends ApplicationContextAware>)
