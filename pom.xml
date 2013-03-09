@@ -12,6 +12,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.test.search.classdir>true</maven.test.search.classdir>
 	</properties>
 
 	<dependencies>
@@ -62,4 +63,8 @@
 			<version>0.6-groovy-1.7</version>
 		</dependency>
 	</dependencies>
+	
+	<build>
+	
+	</build>
 </project>
